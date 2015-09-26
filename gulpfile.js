@@ -8,13 +8,15 @@ var JS_DESTINATION = 'js/';
 
 gulp.task('coffee-clean', function(cb) {
 	del([
-		JS_DESTINATION + '**/*'
+		JS_DESTINATION + '**/*',
+    '!' + JS_DESTINATION + 'lib',
+    '!' + JS_DESTINATION + 'lib/*'
 	], cb);
 });
 
 var coffeeCompile = function() {
   gulp.src([COFFEESCRIPT_SOURCES])
-    .pipe(coffee({bare: false}).on('error', function(error) {
+    .pipe(coffee({bare: true}).on('error', function(error) {
       console.log("ERROR: " + error);
     }))
     .pipe(gulp.dest(JS_DESTINATION));
