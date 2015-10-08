@@ -1,11 +1,16 @@
 class CanvasFractal
   @RECURISE: 'recursive'
   @ONCE: 'once'
+  @MAXIMUM_STEPS: 7
+  @DEFAULT_STEP: 1
   constructor: ->
     @canvas = document.getElementById 'canvas'
     @ctx = null
     if canvas.getContext
       @ctx = @canvas.getContext '2d'
+
+    @initClickListener()
+    @currentStep = CanvasFractal.DEFAULT_STEP
 
   setupContext: ->
     @ctx.beginPath()
@@ -18,7 +23,25 @@ class CanvasFractal
 
   draw: ->
     @setupContext()
-    @startDrawing 7, CanvasFractal.RECURSIVE
+    @startDrawing 1, CanvasFractal.RECURSIVE
+
+  initClickListener: ->
+    $(window).on 'keydown', (ev) =>
+      if ev.which == 32
+        @increaseCurrentStep()
+        console.log 'CANVAS WIDHT AND HEIGHT', @canvas.width, @canvas.height
+        @ctx.setTransform 1, 0, 0, 1, 0, 0
+        @ctx.clearRect 0, 0, @canvas.width, @canvas.height
+        @startDrawing @currentStep
+
+  clear: ->
+
+
+  increaseCurrentStep: ->
+    if @currentStep >= CanvasFractal.MAXIMUM_STEPS
+      @currentStep = CanvasFractal.DEFAULT_STEP
+    else
+      @currentStep++
 
   startDrawing: (currentStep, how = CanvasFractal.RECURSIVE) ->
     switch how

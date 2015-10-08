@@ -5,12 +5,18 @@ CanvasFractal = (function() {
 
   CanvasFractal.ONCE = 'once';
 
+  CanvasFractal.MAXIMUM_STEPS = 7;
+
+  CanvasFractal.DEFAULT_STEP = 1;
+
   function CanvasFractal() {
     this.canvas = document.getElementById('canvas');
     this.ctx = null;
     if (canvas.getContext) {
       this.ctx = this.canvas.getContext('2d');
     }
+    this.initClickListener();
+    this.currentStep = CanvasFractal.DEFAULT_STEP;
   }
 
   CanvasFractal.prototype.setupContext = function() {
@@ -25,7 +31,31 @@ CanvasFractal = (function() {
 
   CanvasFractal.prototype.draw = function() {
     this.setupContext();
-    return this.startDrawing(7, CanvasFractal.RECURSIVE);
+    return this.startDrawing(1, CanvasFractal.RECURSIVE);
+  };
+
+  CanvasFractal.prototype.initClickListener = function() {
+    return $(window).on('keydown', (function(_this) {
+      return function(ev) {
+        if (ev.which === 32) {
+          _this.increaseCurrentStep();
+          console.log('CANVAS WIDHT AND HEIGHT', _this.canvas.width, _this.canvas.height);
+          _this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+          _this.ctx.clearRect(0, 0, _this.canvas.width, _this.canvas.height);
+          return _this.startDrawing(_this.currentStep);
+        }
+      };
+    })(this));
+  };
+
+  CanvasFractal.prototype.clear = function() {};
+
+  CanvasFractal.prototype.increaseCurrentStep = function() {
+    if (this.currentStep >= CanvasFractal.MAXIMUM_STEPS) {
+      return this.currentStep = CanvasFractal.DEFAULT_STEP;
+    } else {
+      return this.currentStep++;
+    }
   };
 
   CanvasFractal.prototype.startDrawing = function(currentStep, how) {
