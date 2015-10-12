@@ -17,6 +17,7 @@ CanvasFractal = (function() {
     }
     this.initClickListener();
     this.currentStep = CanvasFractal.DEFAULT_STEP;
+    this.firstTime = false;
   }
 
   CanvasFractal.prototype.setupContext = function() {
@@ -31,7 +32,7 @@ CanvasFractal = (function() {
 
   CanvasFractal.prototype.draw = function() {
     this.setupContext();
-    return this.startDrawing(1, CanvasFractal.RECURSIVE);
+    return this.startDrawing(0, CanvasFractal.RECURSIVE);
   };
 
   CanvasFractal.prototype.initClickListener = function() {
@@ -39,10 +40,10 @@ CanvasFractal = (function() {
       return function(ev) {
         if (ev.which === 32) {
           _this.increaseCurrentStep();
-          console.log('CANVAS WIDHT AND HEIGHT', _this.canvas.width, _this.canvas.height);
           _this.ctx.setTransform(1, 0, 0, 1, 0, 0);
           _this.ctx.clearRect(0, 0, _this.canvas.width, _this.canvas.height);
-          return _this.startDrawing(_this.currentStep);
+          _this.startDrawing(_this.currentStep);
+          return _this.firstTime = true;
         }
       };
     })(this));
@@ -71,20 +72,24 @@ CanvasFractal = (function() {
           this.ctx.save();
           this.ctx.translate(250, 250);
           this.ctx.scale(0.5, 0.5);
+          this.ctx.fillStyle = 'green';
           this.startDrawing(currentStep);
           this.ctx.restore();
           this.ctx.translate(250, 0);
           this.ctx.rotate(MathUtils.toRadians(-90));
           this.ctx.scale(-0.5, 0.5);
+          this.ctx.fillStyle = 'yellow';
           this.startDrawing(currentStep);
           this.ctx.restore();
           this.ctx.translate(250, 0);
           this.ctx.scale(-0.5, 0.5);
+          this.ctx.fillStyle = 'red';
           this.startDrawing(currentStep);
           this.ctx.restore();
           this.ctx.translate(125, 250);
           this.ctx.rotate(MathUtils.toRadians(90));
           this.ctx.scale(0.25, 0.25);
+          this.ctx.fillStyle = 'blue';
           return this.startDrawing(currentStep);
         } else {
           return this.startDrawing(0, CanvasFractal.ONCE);
