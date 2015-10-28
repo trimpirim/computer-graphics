@@ -27,8 +27,8 @@ FifthObject = (function(superClass) {
     color = new Object('color', color);
     object.color = color;
     object.ondrag = function(positions) {
-      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.x / 1), [0, 1, 0]);
-      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.y / 1), [1, 0, 0]);
+      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]);
+      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]);
     };
     object.ondraw = function() {
       mat4.translate(this.modelMatrix, this.modelMatrix, [5, 0, 0]);

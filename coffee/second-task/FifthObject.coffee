@@ -106,8 +106,8 @@ class FifthObject extends Shape
     object.color = color
 
     object.ondrag = (positions) ->
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 1), [0, 1, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 1), [1, 0, 0]
+      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
+      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
 
     object.ondraw = ->
       mat4.translate @modelMatrix, @modelMatrix, [5, 0, 0]
