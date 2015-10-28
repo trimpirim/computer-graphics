@@ -20,3 +20,9 @@ class Vertex extends Vertex2
       @y = coordinate
     else if !@z?
       @z = coordinate
+
+  length: ->
+    return 3
+
+  toArray: ->
+    [@x, @y, @z]

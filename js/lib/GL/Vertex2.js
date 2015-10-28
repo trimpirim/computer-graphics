@@ -32,12 +32,28 @@ Vertex2 = (function() {
     }
   };
 
+  Vertex2.prototype.length = function() {
+    return 2;
+  };
+
   Vertex2.prototype.loadCoordinate = function(coordinate) {
     if (this.x == null) {
       return this.x = coordinate;
     } else if (this.y == null) {
       return this.y = coordinate;
     }
+  };
+
+  Vertex2.prototype.toArray = function() {
+    return [this.x, this.y];
+  };
+
+  Vertex2.prototype.increase = function(which, amount) {
+    return this[which] += amount;
+  };
+
+  Vertex2.prototype.decrease = function(which, amount) {
+    return this[which] -= amount;
   };
 
   return Vertex2;

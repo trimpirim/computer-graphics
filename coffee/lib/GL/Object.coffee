@@ -86,4 +86,15 @@ class Object
 
       @color = color
 
+  clone: (obj) ->
+    if !obj?
+      obj = @
+
+    copy = new Object()
+    for key, value of obj
+      if obj.hasOwnProperty(key)
+        copy[key] = obj[key]
+
+    return copy
+
 

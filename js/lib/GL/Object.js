@@ -117,6 +117,21 @@ Object = (function() {
     }
   };
 
+  Object.prototype.clone = function(obj) {
+    var copy, key, value;
+    if (obj == null) {
+      obj = this;
+    }
+    copy = new Object();
+    for (key in obj) {
+      value = obj[key];
+      if (obj.hasOwnProperty(key)) {
+        copy[key] = obj[key];
+      }
+    }
+    return copy;
+  };
+
   return Object;
 
 })();

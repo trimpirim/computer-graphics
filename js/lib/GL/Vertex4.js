@@ -47,6 +47,14 @@ Vertex4 = (function(superClass) {
     }
   };
 
+  Vertex4.prototype.length = function() {
+    return 4;
+  };
+
+  Vertex4.prototype.toArray = function() {
+    return [this.x, this.y, this.z, this.u];
+  };
+
   return Vertex4;
 
 })(Vertex);

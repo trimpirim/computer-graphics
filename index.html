@@ -30,7 +30,7 @@
 
       void main(void) {
         gl_PointSize = pointSize;
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 5.0); 
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0); 
         vColor = aVertexColor;
       }
     </script>
@@ -46,6 +46,7 @@
     <script src="js/lib/GL/Vertex.js"></script>
     <script src="js/lib/GL/Vertex4.js"></script>
     <script src="js/lib/GL/Buffers.js"></script>
+    <script src="js/lib/GL/Camera.js"></script>
     <script src="js/lib/GL/Indexer.js"></script>
     <script src="js/lib/GL/Buffer.js"></script>
     <script src="js/lib/GL/Matrices.js"></script>
@@ -54,15 +55,23 @@
     <script src="js/lib/GL/Color.js"></script>
     <script src="js/lib/GL/Objects.js"></script>
     <script src="js/lib/GL/Shaders.js"></script>
+
+    <script src="js/second-task/TransformationState.js"></script>
+    <script src="js/second-task/StateObject.js"></script>
+    <script src="js/second-task/RotationTransformationState.js"></script>
+    <script src="js/second-task/TranslationTransformationState.js"></script>
+    <script src="js/second-task/ScaleTransformationState.js"></script>
+    <script src="js/second-task/TransformationStates.js"></script>
+
+    <script src="js/second-task/FirstObject.js"></script>
+    <script src="js/second-task/SecondObject.js"></script>
+    <script src="js/second-task/ThirdObject.js"></script>
+    <script src="js/second-task/ForthObject.js"></script>
+    <script src="js/second-task/FifthObject.js"></script>
+    <script src="js/second-task/SixthObject.js"></script>
+    <script src="js/second-task/SeventhObject.js"></script>
     <script src="js/Run.js"></script>
-    <!--<script src="js/EdgeAxis.js"></script>
-    <script src="js/VertexAxis.js"></script>
-    <script src="js/FaceAxis.js"></script>
-    <script src="js/RunSomeFigure.js"></script>-->
-    <!--<script src="js/Triangle.js"></script>
-    <script src="js/RunTriangle.js"></script>-->
-    <script src="js/Fractal.js"></script>
-    <script src="js/RunFractal.js"></script>
+    <script src="js/second-task/RunSecondTask.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

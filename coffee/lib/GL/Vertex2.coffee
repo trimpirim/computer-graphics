@@ -12,8 +12,20 @@ class Vertex2
   isFull: () ->
     return if @x? and @y? then true else false
 
+  length: ->
+    return 2
+
   loadCoordinate: (coordinate) ->
     if !@x?
       @x = coordinate
     else if !@y?
       @y = coordinate
+
+  toArray: ->
+    [@x, @y]
+
+  increase: (which, amount) ->
+    @[which] += amount
+
+  decrease: (which, amount) ->
+    @[which] -= amount
