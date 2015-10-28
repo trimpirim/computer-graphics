@@ -3,7 +3,7 @@ class RunSecondTask extends Run
     @gl = new GL()
 
   run: () ->
-    ###firstObject = FirstObject.generate()
+    firstObject = FirstObject.generate()
     @gl.addObject firstObject
 
     secondObject = SecondObject.generate()
@@ -13,16 +13,16 @@ class RunSecondTask extends Run
     @gl.addObject thirdObject
     
     forthObject = ForthObject.generate()
-    @gl.addObject forthObject###
+    @gl.addObject forthObject
     
     fifthObject = FifthObject.generate()
     @gl.addObject fifthObject
 
-    ###sixthObject = SixthObject.generate()
+    sixthObject = SixthObject.generate()
     @gl.addObject sixthObject
 
     seventhObject = SeventhObject.generate()
-    @gl.addObject seventhObject###
+    @gl.addObject seventhObject
 
     #wireframe = secondObject.clone()
     #wireframe.mode = GL.gl['LINE_STRIP']

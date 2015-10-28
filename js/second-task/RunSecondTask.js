@@ -10,29 +10,21 @@ RunSecondTask = (function(superClass) {
   }
 
   RunSecondTask.prototype.run = function() {
-
-    /*firstObject = FirstObject.generate()
-    @gl.addObject firstObject
-    
-    secondObject = SecondObject.generate()
-    @gl.addObject secondObject
-    
-    thirdObject = ThirdObject.generate()
-    @gl.addObject thirdObject
-    
-    forthObject = ForthObject.generate()
-    @gl.addObject forthObject
-     */
-    var fifthObject;
+    var fifthObject, firstObject, forthObject, secondObject, seventhObject, sixthObject, thirdObject;
+    firstObject = FirstObject.generate();
+    this.gl.addObject(firstObject);
+    secondObject = SecondObject.generate();
+    this.gl.addObject(secondObject);
+    thirdObject = ThirdObject.generate();
+    this.gl.addObject(thirdObject);
+    forthObject = ForthObject.generate();
+    this.gl.addObject(forthObject);
     fifthObject = FifthObject.generate();
     this.gl.addObject(fifthObject);
-
-    /*sixthObject = SixthObject.generate()
-    @gl.addObject sixthObject
-    
-    seventhObject = SeventhObject.generate()
-    @gl.addObject seventhObject
-     */
+    sixthObject = SixthObject.generate();
+    this.gl.addObject(sixthObject);
+    seventhObject = SeventhObject.generate();
+    this.gl.addObject(seventhObject);
     this.gl.ondrag();
     this.gl.onkeydown();
     return this.gl.startGL();
