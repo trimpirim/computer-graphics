@@ -1,4 +1,4 @@
-class StateObject extends Object 
+class StateObject extends SimpleObject 
 	constructor: (@name, @vertices, @mode, @faces, @coordinates, @index) ->
 		super @name, @vertices, @mode, @faces, @coordinates, @index
 

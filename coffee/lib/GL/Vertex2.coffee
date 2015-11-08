@@ -29,3 +29,7 @@ class Vertex2
 
   decrease: (which, amount) ->
     @[which] -= amount
+
+  change: (which, value) ->
+    if @[which]?
+      @[which] = value

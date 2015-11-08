@@ -79,16 +79,21 @@ class FirstObject extends Shape
 
     color = new Vertices()
     color.fromArray FirstObject.colors
-    color = new Object 'color', color
+    color = new SimpleObject 'color', color
     object.color = color
 
     object.ondrag = (positions) ->
       mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
       mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
 
+    object.onkeydown = (ev) ->
+      switch ev.which
+        when 70
+          #mat4.translate @modelMatrix, @modelMatrix, [5, 0, -3]
+          mat4.translate @modelMatrix, @modelMatrix, [20, 0, -3]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(180), [0, 1, 0]
+
     object.ondraw = ->
-      mat4.translate @modelMatrix, @modelMatrix, [5, 0, -3]
-      #mat4.translate @modelMatrix, @modelMatrix, [-15, 0, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(180), [0, 1, 0]
+      mat4.translate @modelMatrix, @modelMatrix, [-15, 0, 0]
 
     object

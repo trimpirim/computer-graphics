@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
   var r;
   r = new RunSecondTask();
   return r.run();

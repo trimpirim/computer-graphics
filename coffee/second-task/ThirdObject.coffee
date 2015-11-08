@@ -99,16 +99,21 @@ class ThirdObject extends Shape
 
     color = new Vertices()
     color.fromArray ThirdObject.colors
-    color = new Object 'color', color
+    color = new SimpleObject 'color', color
     object.color = color
 
     object.ondrag = (positions) ->
       mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
       mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
 
+    object.onkeydown = (ev) ->
+      switch ev.which
+        when 70
+          #mat4.translate @modelMatrix, @modelMatrix, [3, 1, 0]
+          mat4.translate @modelMatrix, @modelMatrix, [8, 1, 0]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]
+
     object.ondraw = ->
       mat4.translate @modelMatrix, @modelMatrix, [-5, 0, 0]
-      #mat4.translate @modelMatrix, @modelMatrix, [0, 0, 10]
-      #mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
 
     object

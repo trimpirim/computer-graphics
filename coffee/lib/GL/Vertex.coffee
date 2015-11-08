@@ -1,6 +1,13 @@
 class Vertex extends Vertex2
   constructor: (@x, @y, @z) ->
     super(@x, @y)
+    @originals =
+      x: @x
+      y: @y
+      z: @z
+
+  original: (which) ->
+    @originals[which]
 
   fromArray: (array) ->
     super(array)

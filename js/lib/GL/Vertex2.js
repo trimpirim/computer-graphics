@@ -56,6 +56,12 @@ Vertex2 = (function() {
     return this[which] -= amount;
   };
 
+  Vertex2.prototype.change = function(which, value) {
+    if (this[which] != null) {
+      return this[which] = value;
+    }
+  };
+
   return Vertex2;
 
 })();

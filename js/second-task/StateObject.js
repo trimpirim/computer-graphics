@@ -42,4 +42,4 @@ StateObject = (function(superClass) {
 
   return StateObject;
 
-})(Object);
+})(SimpleObject);

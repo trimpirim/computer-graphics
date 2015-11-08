@@ -102,17 +102,22 @@ class FifthObject extends Shape
 
     color = new Vertices()
     color.fromArray FifthObject.colors
-    color = new Object 'color', color
+    color = new SimpleObject 'color', color
     object.color = color
 
     object.ondrag = (positions) ->
       mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
       mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
 
+    object.onkeydown = (ev) ->
+      switch ev.which
+        when 70
+          #mat4.translate @modelMatrix, @modelMatrix, [2, 0, 1]
+          mat4.translate @modelMatrix, @modelMatrix, [-3, 0, 1]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(-180), [1, 0, 0]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]
+
     object.ondraw = ->
       mat4.translate @modelMatrix, @modelMatrix, [5, 0, 0]
-      #mat4.translate @modelMatrix, @modelMatrix, [0, 10, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 0, 1]
 
     object

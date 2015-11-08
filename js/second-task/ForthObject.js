@@ -24,15 +24,21 @@ ForthObject = (function(superClass) {
     object = new StateObject("forth-object", vertices, GL.gl['TRIANGLES'], faces);
     color = new Vertices();
     color.fromArray(ForthObject.colors);
-    color = new Object('color', color);
+    color = new SimpleObject('color', color);
     object.color = color;
     object.ondrag = function(positions) {
       mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]);
       return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]);
     };
+    object.onkeydown = function(ev) {
+      switch (ev.which) {
+        case 70:
+          mat4.translate(this.modelMatrix, this.modelMatrix, [3, 0, -1]);
+          return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(-90), [1, 0, 0]);
+      }
+    };
     object.ondraw = function() {
-      mat4.translate(this.modelMatrix, this.modelMatrix, [0, 0, 0]);
-      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(-180), [1, 0, 0]);
+      return mat4.translate(this.modelMatrix, this.modelMatrix, [0, 0, 0]);
     };
     return object;
   };

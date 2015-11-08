@@ -1,4 +1,4 @@
-class Shape extends Object
+class Shape extends SimpleObject
   constructor: (@name, @vertices, @rowsCount, @columnsCount, @mode, @coordinates, @index, @color) ->
     super @name, @vertices, @rowsCount, @columnsCount, @mode, @coordinates, @index
 

@@ -10,7 +10,16 @@ Vertex = (function(superClass) {
     this.y = y;
     this.z = z;
     Vertex.__super__.constructor.call(this, this.x, this.y);
+    this.originals = {
+      x: this.x,
+      y: this.y,
+      z: this.z
+    };
   }
+
+  Vertex.prototype.original = function(which) {
+    return this.originals[which];
+  };
 
   Vertex.prototype.fromArray = function(array) {
     Vertex.__super__.fromArray.call(this, array);

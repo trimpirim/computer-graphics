@@ -24,11 +24,18 @@ ThirdObject = (function(superClass) {
     object = new StateObject("third-object", vertices, GL.gl['TRIANGLES'], faces);
     color = new Vertices();
     color.fromArray(ThirdObject.colors);
-    color = new Object('color', color);
+    color = new SimpleObject('color', color);
     object.color = color;
     object.ondrag = function(positions) {
       mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]);
       return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]);
+    };
+    object.onkeydown = function(ev) {
+      switch (ev.which) {
+        case 70:
+          mat4.translate(this.modelMatrix, this.modelMatrix, [8, 1, 0]);
+          return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(90), [0, 1, 0]);
+      }
     };
     object.ondraw = function() {
       return mat4.translate(this.modelMatrix, this.modelMatrix, [-5, 0, 0]);
