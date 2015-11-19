@@ -1,53 +1,13 @@
-var Camera, Rotation, Scale, Translation,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Translation = (function(superClass) {
-  extend(Translation, superClass);
-
-  function Translation(x, y, z) {
-    this.x = x != null ? x : 0;
-    this.y = y != null ? y : 0;
-    this.z = z != null ? z : 0;
-    Translation.__super__.constructor.call(this, this.x, this.y, this.z);
-  }
-
-  return Translation;
-
-})(Vertex);
-
-Rotation = (function(superClass) {
-  extend(Rotation, superClass);
-
-  function Rotation(x, y, z) {
-    this.x = x != null ? x : 0;
-    this.y = y != null ? y : 0;
-    this.z = z != null ? z : 0;
-    Rotation.__super__.constructor.call(this, this.x, this.y, this.z);
-  }
-
-  return Rotation;
-
-})(Vertex);
-
-Scale = (function(superClass) {
-  extend(Scale, superClass);
-
-  function Scale(x, y, z) {
-    this.x = x != null ? x : 1;
-    this.y = y != null ? y : 1;
-    this.z = z != null ? z : 1;
-    Scale.__super__.constructor.call(this, this.x, this.y, this.z);
-  }
-
-  return Scale;
-
-})(Vertex);
+var Camera;
 
 Camera = (function() {
-  function Camera(angle, translation, scale) {
-    if (angle == null) {
-      angle = 0;
+  function Camera(rotation, translation, scale) {
+    if (rotation == null) {
+      rotation = {
+        x: 0,
+        y: 0,
+        z: 0
+      };
     }
     if (translation == null) {
       translation = {
@@ -63,9 +23,9 @@ Camera = (function() {
         z: 1
       };
     }
-    this.translation = new Translation(translation.x, translation.y, translation.z);
-    this.rotation = new Rotation(angle);
-    this.scale = new Scale(scale.x, scale.y, scale.z);
+    this.translation = new TranslationState(translation.x, translation.y, translation.z);
+    this.rotation = new RotationState(rotation.x, rotation.y, rotation.z);
+    this.scale = new ScaleState(scale.x, scale.y, scale.z);
   }
 
   Camera.prototype.draw = function() {

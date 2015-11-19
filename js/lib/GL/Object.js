@@ -61,19 +61,6 @@ SimpleObject = (function() {
     return this.buffers.add(name, buffer);
   };
 
-  SimpleObject.prototype.translate = function(matrix) {
-    return mat4.translate(Matrices.getMatrix('modelViewMatrix', matrix));
-  };
-
-  SimpleObject.prototype.rotate = function(matrix, angle, axis, radians) {
-    if (radians == null) {
-      radians = false;
-    }
-    if (!radians) {
-      return angle = MathUtils.toRadians(angle);
-    }
-  };
-
   SimpleObject.prototype.compileBuffers = function() {
     return this.buffers.compile();
   };
@@ -130,6 +117,15 @@ SimpleObject = (function() {
       }
     }
     return copy;
+  };
+
+  SimpleObject.prototype.animate = function(interval, callback) {
+    var savedInterval;
+    return savedInterval = setInterval(function() {
+      if (callback != null) {
+        return callback(savedInterval);
+      }
+    }, interval);
   };
 
   return SimpleObject;

@@ -4,7 +4,23 @@ Vertex2 = (function() {
   function Vertex2(x, y) {
     this.x = x;
     this.y = y;
+    this.originals = {
+      x: this.x,
+      y: this.y
+    };
+    this.changed = {
+      x: 0,
+      y: 0
+    };
   }
+
+  Vertex2.prototype.original = function(which, amount) {
+    if (amount != null) {
+      this.original[which] = amount;
+      this.changed[which] = amount;
+    }
+    return this.originals[which];
+  };
 
   Vertex2.prototype.fromArray = function(array) {
     if (array[0] != null) {
@@ -58,7 +74,21 @@ Vertex2 = (function() {
 
   Vertex2.prototype.change = function(which, value) {
     if (this[which] != null) {
-      return this[which] = value;
+      this[which] = value;
+      return this.changed[which] += value;
+    }
+  };
+
+  Vertex2.prototype.reset = function(which, force) {
+    if (force == null) {
+      force = false;
+    }
+    if (this[which] != null) {
+      if (!force) {
+        return this[which] = this.original[which];
+      } else {
+        return this[which] = 0;
+      }
     }
   };
 

@@ -99,6 +99,9 @@ class FifthObject extends Shape
     faces.fromArray FifthObject.faces
 
     object = new StateObject "fifth-object", vertices, GL.gl['TRIANGLES'], faces
+    object.initialTranslation Axis.TYPES.X, 5, true
+
+    object.endMatrix = [0, 0, 1, 0, 0, -1, 0, 0, 1, 0, 0, 0, 2, 0, 1, 1]
 
     color = new Vertices()
     color.fromArray FifthObject.colors
@@ -106,18 +109,19 @@ class FifthObject extends Shape
     object.color = color
 
     object.ondrag = (positions) ->
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
+      @rotateY positions.deltas.x / 5
+      @rotateX positions.deltas.y / 5
 
-    object.onkeydown = (ev) ->
+    ###object.onkeydown = (ev) ->
       switch ev.which
+        when 16
+          interval = setInterval =>
+            clearInterval interval if @transformationDone
+            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
+          , 10
         when 70
-          #mat4.translate @modelMatrix, @modelMatrix, [2, 0, 1]
           mat4.translate @modelMatrix, @modelMatrix, [-3, 0, 1]
           mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(-180), [1, 0, 0]
-          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]
-
-    object.ondraw = ->
-      mat4.translate @modelMatrix, @modelMatrix, [5, 0, 0]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]###
 
     object

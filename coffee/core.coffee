@@ -63,3 +63,62 @@ Function.prototype.clone = ->
   temp.__clonedFrom = cloned
 
   temp
+
+class Dropdown 
+	@CLASSES:
+		HIDDEN: 'drop-down-hidden'
+		SHOWN: 'drop-down-shown'
+		TOGGLE: '.drop-down-toggle'
+	@DATA_FIELDS:
+		TO_HIDE: 'to-hide'
+
+	constructor: (@_toggle = Dropdown.CLASSES.TOGGLE, @content) ->
+		@elements =
+			toggle: $ @_toggle
+			content: $ @content
+
+		if !@hasContent()
+			@alternativeUsage()
+
+		@initiateOnClick()
+
+	initiateOnClick: =>
+		@elements.toggle.on 'click', =>
+			@toggle()
+
+	alternativeUsage: ->
+		toHide = @elements.toggle.data Dropdown.DATA_FIELDS.TO_HIDE
+		if toHide?
+			@content = toHide
+			@elements.content = $ toHide
+			@hide()
+
+	hasContent: ->
+		@elements.content.length > 0
+
+	toggle: ->
+		if @elements.content.hasClass Dropdown.CLASSES.HIDDEN
+			@show()	
+		else
+			@hide()
+
+	show: ->
+		@elements.content.removeClass Dropdown.CLASSES.HIDDEN
+		@elements.content.addClass Dropdown.CLASSES.SHOWN
+
+	hide: ->
+		@elements.content.addClass Dropdown.CLASSES.HIDDEN
+		@elements.content.removeClass Dropdown.CLASSES.SHOWN
+
+Array.prototype.equals = (array) ->
+  return false if not array # if the other array is a falsy value, return
+  return false if @length isnt array.length # compare lengths - can save a lot of time
+
+  for item, index in @
+    if item instanceof Array and array[index] instanceof Array # Check if we have nested arrays
+      if not item.equals(array[index]) # recurse into the nested arrays
+        return false
+    else if this[index] != array[index]
+      return false # Warning - two different object instances will never be equal: {x:20} != {x:20}
+  true
+

@@ -13,32 +13,150 @@ StateObject = (function(superClass) {
     this.coordinates = coordinates;
     this.index = index;
     StateObject.__super__.constructor.call(this, this.name, this.vertices, this.mode, this.faces, this.coordinates, this.index);
-    this.DEFAULT_TRANSFORMATIONS = {
-      rotation: {
-        angle: 0,
-        vertex: {
-          x: 0,
-          y: 0,
-          z: 0
-        }
-      },
-      translation: {
-        vertex: {
-          x: 0,
-          y: 0,
-          z: 0
-        }
-      },
-      scale: {
-        vertex: {
-          x: 0,
-          y: 0,
-          z: 0
-        }
+    this.translation = new TranslationState();
+    this.rotation = new RotationState();
+    this.scale = new ScaleState();
+    this.endMatrix = mat4.create();
+    this.transformationDone = false;
+    this.original = mat4.create();
+    this.onkeydown = function(ev) {
+      var interval;
+      switch (ev.which) {
+        case 16:
+          return interval = setInterval((function(_this) {
+            return function() {
+              if (_this.transformationDone) {
+                clearInterval(interval);
+              }
+              return _this.modelMatrix = _this.increaseMatrixBy(_this.modelMatrix, 0.1);
+            };
+          })(this), 20);
       }
     };
-    this.state = TransformationStates.fromObject(this.DEFAULT_TRANSFORMATIONS.rotation, this.DEFAULT_TRANSFORMATIONS.translation, this.DEFAULT_TRANSFORMATIONS.scale);
   }
+
+  StateObject.prototype.rotate = function(which, amount) {
+    switch (which) {
+      case Axis.TYPES.X:
+        return this.rotateX(amount);
+      case Axis.TYPES.Y:
+        return this.rotateY(amount);
+      case Axis.TYPES.Z:
+        return this.rotateZ(amount);
+    }
+  };
+
+  StateObject.prototype.rotateX = function(amount, force) {
+    var mat;
+    if (force == null) {
+      force = false;
+    }
+    this.rotation.change(Axis.TYPES.X, amount);
+    if (force) {
+      mat = mat4.create();
+      mat4.copy(mat, this.original);
+      mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
+      return this.modelMatrix = mat;
+    } else {
+      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
+      return this.original = this.modelMatrix;
+    }
+  };
+
+  StateObject.prototype.rotateY = function(amount, force) {
+    var mat;
+    if (force == null) {
+      force = false;
+    }
+    this.rotation.change(Axis.TYPES.Y, amount);
+    if (force) {
+      mat = mat4.create();
+      mat4.copy(mat, this.original);
+      mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
+      return this.modelMatrix = mat;
+    } else {
+      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
+      return this.original = this.modelMatrix;
+    }
+  };
+
+  StateObject.prototype.rotateZ = function(amount, force) {
+    var mat;
+    if (force == null) {
+      force = false;
+    }
+    this.rotation.change(Axis.TYPES.Z, amount);
+    if (force) {
+      mat = mat4.create();
+      mat4.copy(mat, this.original);
+      mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
+      return this.modelMatrix = mat;
+    } else {
+      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
+      return this.original = this.modelMatrix;
+    }
+  };
+
+  StateObject.prototype.translateOnce = function(which, amount, force) {
+    if (force == null) {
+      force = true;
+    }
+    this.translate(which, amount, force);
+    return this.translation.reset(which);
+  };
+
+  StateObject.prototype.translate = function(which, amount, force) {
+    var mat;
+    if (force == null) {
+      force = false;
+    }
+    this.translation.change(which, amount);
+    if (force) {
+      mat = mat4.create();
+      mat4.copy(mat, this.original);
+      mat4.translate(mat, mat, this.translation.toArray());
+      return this.modelMatrix = mat;
+    }
+  };
+
+  StateObject.prototype.scale = function(which, amount) {
+    return this.scale.change(which, amount);
+  };
+
+  StateObject.prototype.increaseMatrixBy = function(matrix, amount) {
+    var m;
+    m = matrix.map((function(_this) {
+      return function(item, key) {
+        var abs, current, end, operator, start;
+        start = +(item.toFixed(3));
+        end = +(_this.endMatrix[key].toFixed(3));
+        current = start;
+        operator = amount;
+        if (start > end) {
+          abs = Math.abs(start - end);
+          operator = abs < operator ? -abs : -operator;
+        } else if (start < end) {
+          abs = Math.abs(end - start);
+          operator = abs < operator ? abs : operator;
+        }
+        if (start !== end) {
+          current += operator;
+        }
+        return current;
+      };
+    })(this));
+    this.transformationDone = Utils.array(m).equals(Utils.array(matrix));
+    return m;
+  };
+
+  StateObject.prototype.initialTranslation = function(which, amount, force) {
+    if (force == null) {
+      force = false;
+    }
+    this.translate(which, amount, force);
+    this.translation.original(which, amount);
+    return this.original = this.modelMatrix;
+  };
 
   return StateObject;
 

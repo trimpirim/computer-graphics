@@ -76,24 +76,36 @@ class FirstObject extends Shape
     faces.fromArray FirstObject.faces
 
     object = new StateObject "first-object", vertices, GL.gl['TRIANGLES'], faces
+    object.initialTranslation Axis.TYPES.X, -15, true
+    ###object.translate Axis.TYPES.X, -15, true
+    object.translation.original 'x', -15
+    object.original = object.modelMatrix###
 
     color = new Vertices()
     color.fromArray FirstObject.colors
     color = new SimpleObject 'color', color
     object.color = color
 
+    object.endMatrix = [-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 5, 0, -3, 1]
+
     object.ondrag = (positions) ->
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
+      @rotateY positions.deltas.x / 5, false
+      @rotateX positions.deltas.y / 5, false
 
-    object.onkeydown = (ev) ->
+    ###object.onkeydown = (ev) ->
       switch ev.which
+        when 16
+          interval = setInterval =>
+            clearInterval interval if @transformationDone
+            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
+          , 10
         when 70
-          #mat4.translate @modelMatrix, @modelMatrix, [5, 0, -3]
           mat4.translate @modelMatrix, @modelMatrix, [20, 0, -3]
-          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(180), [0, 1, 0]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(180), [0, 1, 0]###
 
-    object.ondraw = ->
-      mat4.translate @modelMatrix, @modelMatrix, [-15, 0, 0]
+    object.onredraw = ->
+      #@translationCalculation()
+      #@translate Axis.TYPES.X, -15, true
+      #mat4.translate @modelMatrix, @modelMatrix, [-15, 0, 0]
 
     object

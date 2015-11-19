@@ -124,6 +124,14 @@ GL = (function() {
     return this.loadObjects();
   };
 
+  GL.prototype.loopOnlyShapes = function(callback) {
+    return this.objects.loopOnlyShapes(function(item, index) {
+      if (callback != null) {
+        return callback(item);
+      }
+    });
+  };
+
   GL.prototype.loadObjects = function() {
     this.gl.uniform1f(this.shaderProgram.pointSize, 5.0);
     return this.objects.loopOnlyShapes((function(_this) {
@@ -217,6 +225,14 @@ GL = (function() {
     return this.objects.loopOnlyShapes(function(item) {
       if (item.ondraw != null) {
         return item.ondraw();
+      }
+    });
+  };
+
+  GL.prototype.onredraw = function() {
+    return this.objects.loopOnlyShapes(function(item) {
+      if (item.onredraw != null) {
+        return item.onredraw();
       }
     });
   };

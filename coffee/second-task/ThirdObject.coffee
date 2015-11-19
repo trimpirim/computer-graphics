@@ -96,24 +96,31 @@ class ThirdObject extends Shape
     faces.fromArray ThirdObject.faces
 
     object = new StateObject "third-object", vertices, GL.gl['TRIANGLES'], faces
+    object.initialTranslation Axis.TYPES.X, -5, true
 
     color = new Vertices()
     color.fromArray ThirdObject.colors
     color = new SimpleObject 'color', color
     object.color = color
 
+    object.endMatrix = [0, 0, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 3, 1, 0, 1]
+
     object.ondrag = (positions) ->
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]
-      mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]
+      @rotateY positions.deltas.x / 5
+      @rotateX positions.deltas.y / 5
 
-    object.onkeydown = (ev) ->
+    ###object.onkeydown = (ev) ->
       switch ev.which
+        when 16
+          interval = setInterval =>
+            clearInterval interval if @transformationDone
+            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
+          , 10
         when 70
-          #mat4.translate @modelMatrix, @modelMatrix, [3, 1, 0]
           mat4.translate @modelMatrix, @modelMatrix, [8, 1, 0]
-          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]###
 
-    object.ondraw = ->
-      mat4.translate @modelMatrix, @modelMatrix, [-5, 0, 0]
+    #object.ondraw = ->
+    #  mat4.translate @modelMatrix, @modelMatrix, [-5, 0, 0]
 
     object

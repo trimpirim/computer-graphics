@@ -1,5 +1,18 @@
 class Vertex2
-  constructor: (@x, @y ) ->
+  constructor: (@x, @y) ->
+    @originals = 
+      x: @x
+      y: @y
+
+    @changed = 
+      x: 0
+      y: 0
+
+  original: (which, amount) ->
+    if amount?
+      @original[which] = amount
+      @changed[which] = amount
+    @originals[which]
 
   fromArray: (array) ->
     @x = array[0] if array[0]?
@@ -33,3 +46,11 @@ class Vertex2
   change: (which, value) ->
     if @[which]?
       @[which] = value
+      @changed[which] += value
+
+  reset: (which, force = false) ->
+    if @[which]? 
+      if !force
+        @[which] = @original[which]
+      else 
+        @[which] = 0

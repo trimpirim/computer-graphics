@@ -1,20 +1,8 @@
-class Translation extends Vertex
-	constructor: (@x = 0, @y = 0, @z  = 0) ->
-		super @x, @y, @z
-	
-class Rotation extends Vertex
-	constructor: (@x = 0, @y = 0, @z = 0) ->
-		super @x, @y, @z
-
-class Scale extends Vertex
-	constructor: (@x = 1, @y = 1, @z = 1) ->
-		super @x, @y, @z
-
 class Camera
-	constructor: (angle = 0, translation = {x: 0, y: 0, z: -15}, scale = {x: 1, y: 1, z: 1}) ->
-		@translation = new Translation translation.x, translation.y, translation.z
-		@rotation = new Rotation angle
-		@scale = new Scale scale.x, scale.y, scale.z
+	constructor: (rotation = {x: 0, y: 0, z: 0}, translation = {x: 0, y: 0, z: -15}, scale = {x: 1, y: 1, z: 1}) ->
+		@translation = new TranslationState translation.x, translation.y, translation.z
+		@rotation = new RotationState rotation.x, rotation.y, rotation.z  
+		@scale = new ScaleState scale.x, scale.y, scale.z
 
 	draw: ->
 		mat4.perspective Matrices.getMatrix('projectionMatrix'), 45, GL.gl.viewportWidth / GL.gl.viewportHeight, 0.1, 1000.0

@@ -6,8 +6,10 @@ class Vertex extends Vertex2
       y: @y
       z: @z
 
-  original: (which) ->
-    @originals[which]
+    @changed = 
+      x: 0
+      y: 0
+      z: 0
 
   fromArray: (array) ->
     super(array)

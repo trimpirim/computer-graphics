@@ -98,6 +98,10 @@ class GL
 
     @loadObjects()
 
+  loopOnlyShapes: (callback) ->
+    @objects.loopOnlyShapes (item, index) ->
+      callback item if callback?
+
   loadObjects: () ->
     @gl.uniform1f @shaderProgram.pointSize, 5.0
     
@@ -145,6 +149,7 @@ class GL
 
   runRenderLoop: () =>
     requestAnimFrame @runRenderLoop
+    #@onredraw()
     @drawScene()
 
   ondrag: () ->
@@ -163,3 +168,7 @@ class GL
   ondraw: () ->
     @objects.loopOnlyShapes (item) ->
       item.ondraw() if item.ondraw?
+
+  onredraw: ->
+    @objects.loopOnlyShapes (item) ->
+      item.onredraw() if item.onredraw?

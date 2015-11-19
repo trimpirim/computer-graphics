@@ -16,6 +16,11 @@ TransformationState = (function() {
       y: y,
       z: z
     };
+    this.originals = {
+      x: x,
+      y: y,
+      z: z
+    };
   }
 
   TransformationState.prototype.increase = function(amount, which) {

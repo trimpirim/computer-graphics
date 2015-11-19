@@ -5,6 +5,11 @@ class TransformationState
 			y: y
 			z: z
 
+		@originals = 
+			x: x
+			y: y
+			z: z
+
 	increase: (amount, which) ->
 		return false if exists which
 

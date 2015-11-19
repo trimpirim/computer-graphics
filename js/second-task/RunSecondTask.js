@@ -8,11 +8,13 @@ RunSecondTask = (function(superClass) {
   function RunSecondTask() {
     this.gl = new GL();
     this.sliders = {};
+    this.dropdowns = {};
   }
 
   RunSecondTask.prototype.run = function() {
     var fifthObject, firstObject, forthObject, secondObject, seventhObject, sixthObject, thirdObject;
     this.initiateSliders();
+    this.initiateDropdowns();
     firstObject = FirstObject.generate();
     this.gl.addObject(firstObject);
     secondObject = SecondObject.generate();
@@ -32,8 +34,15 @@ RunSecondTask = (function(superClass) {
     return this.gl.startGL();
   };
 
+  RunSecondTask.prototype.initiateDropdowns = function() {
+    return this.dropdowns = {
+      camera: new Dropdown('.drop-down-toggle-camera'),
+      model: new Dropdown('.drop-down-toggle-model')
+    };
+  };
+
   RunSecondTask.prototype.initiateSliders = function() {
-    this.initiateSlider('translate-y', '.translate-y #slider', '.translate-y span.number', {
+    this.initiateSlider('translate-y', '.camera .translate-y #slider', '.camera .translate-y span.number', {
       slide: function(event, ui) {
         return GL.camera.translation.change('y', ui.value);
       },
@@ -41,7 +50,7 @@ RunSecondTask = (function(superClass) {
       max: 50,
       value: 0
     });
-    this.initiateSlider('translate-x', '.translate-x #slider', '.translate-x span.number', {
+    this.initiateSlider('translate-x', '.camera .translate-x #slider', '.camera .translate-x span.number', {
       slide: function(event, ui) {
         return GL.camera.translation.change('x', ui.value);
       },
@@ -49,7 +58,7 @@ RunSecondTask = (function(superClass) {
       max: 50,
       value: 0
     });
-    this.initiateSlider('translate-z', '.translate-z #slider', '.translate-z span.number', {
+    this.initiateSlider('translate-z', '.camera .translate-z #slider', '.camera .translate-z span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           var original;
@@ -103,7 +112,7 @@ RunSecondTask = (function(superClass) {
       step: 0.05,
       value: 1
     });
-    return this.initiateSlider('scale-z', '.scale-z #slider', '.scale-z span.number', {
+    this.initiateSlider('scale-z', '.scale-z #slider', '.scale-z span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return GL.camera.scale.change('z', ui.value);
@@ -113,6 +122,92 @@ RunSecondTask = (function(superClass) {
       max: 5,
       step: 0.05,
       value: 1
+    });
+
+    /* model */
+    this.initiateSlider('translate-y', '.model .translate-y #slider', '.model .translate-y span.number', {
+      slide: (function(_this) {
+        return function(event, ui) {
+          return _this.gl.loopOnlyShapes(function(object) {
+            var original;
+            original = object.translation.original(Axis.TYPES.Y);
+            return object.translate(Axis.TYPES.Y, original + ui.value, true);
+          });
+        };
+      })(this),
+      min: -50,
+      max: 50,
+      value: 0
+    });
+    this.initiateSlider('translate-x', '.model .translate-x #slider', '.model .translate-x span.number', {
+      slide: (function(_this) {
+        return function(event, ui) {
+          return _this.gl.loopOnlyShapes(function(object) {
+            var original;
+            original = object.translation.original(Axis.TYPES.X);
+            return object.translate(Axis.TYPES.X, original + ui.value, true);
+          });
+        };
+      })(this),
+      min: -50,
+      max: 50,
+      value: 0
+    });
+    this.initiateSlider('translate-z', '.model .translate-z #slider', '.model .translate-z span.number', {
+      slide: (function(_this) {
+        return function(event, ui) {
+          return _this.gl.loopOnlyShapes(function(object) {
+            var original;
+            original = object.translation.original(Axis.TYPES.Z);
+            return object.translate(Axis.TYPES.Z, original + ui.value, true);
+          });
+        };
+      })(this),
+      stop: (function(_this) {
+        return function(event, ui) {
+          return null;
+        };
+      })(this),
+      step: 0.05,
+      min: -5,
+      value: 0,
+      max: 5
+    });
+    this.initiateSlider('rotate-x', '.model .rotate-x #slider', '.model .rotate-x span.number', {
+      slide: (function(_this) {
+        return function(event, ui) {
+          return _this.gl.loopOnlyShapes(function(object) {
+            var original;
+            original = object.rotation.original(Axis.TYPES.X);
+            return object.rotateX(original + ui.value, true);
+          });
+        };
+      })(this),
+      max: 180
+    });
+    this.initiateSlider('rotate-y', '.model .rotate-y #slider', '.model .rotate-y span.number', {
+      slide: (function(_this) {
+        return function(event, ui) {
+          return _this.gl.loopOnlyShapes(function(object) {
+            var original;
+            original = object.rotation.original(Axis.TYPES.Y);
+            return object.rotateY(original + ui.value, true);
+          });
+        };
+      })(this),
+      max: 180
+    });
+    return this.initiateSlider('rotate-z', '.model .rotate-z #slider', '.model .rotate-z span.number', {
+      slide: (function(_this) {
+        return function(event, ui) {
+          return _this.gl.loopOnlyShapes(function(object) {
+            var original;
+            original = object.rotation.original(Axis.TYPES.Z);
+            return object.rotateZ(original + ui.value, true);
+          });
+        };
+      })(this),
+      max: 180
     });
   };
 

@@ -43,14 +43,6 @@ class SimpleObject
   addBuffer: (name, buffer) ->
     @buffers.add name, buffer
 
-  translate: (matrix) ->
-    mat4.translate Matrices.getMatrix 'modelViewMatrix', matrix
-
-  rotate: (matrix, angle, axis, radians = false) ->
-    angle = MathUtils.toRadians angle if !radians
-    #mat4.rotate matrix, angle, axis
-    #mat4.multiply matrix, @modelMatrix, @modelMatrix
-
   compileBuffers: () ->
     @buffers.compile()
 
@@ -96,5 +88,10 @@ class SimpleObject
         copy[key] = obj[key]
 
     return copy
+
+  animate: (interval, callback) ->
+    savedInterval = setInterval ->
+      callback(savedInterval) if callback?
+    , interval
 
 

@@ -13,7 +13,13 @@
 }
 
 .options ul.list {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
 
+.options ul.list:first-child {
+  margin-bottom: 0px;
+  margin-top: 20px;
 }
 
 .options ul.list li {
@@ -90,4 +96,26 @@
 	position: absolute;
   right: 30px;
   z-index: 10;
+}
+
+.options ul.list li.heading {
+  padding: 5px 10px 5px 10px;
+  line-height: 10px;
+}
+
+.options ul.list li.drop-down-camera.drop-down-hidden, .options ul.list li.drop-down-model.drop-down-hidden {
+  display: none;
+}
+
+.options ul.list li.drop-down-camera.drop-down-shown, .options ul.list li.drop-down-model.drop-down-shown {
+  display: inherit;
+}
+
+.options ul.list li.heading a {
+  color: #c0c0c0;
+  text-decoration: none;
+}
+
+.options ul.list li.heading a:hover {
+  color: #808080;
 }

@@ -1,4 +1,4 @@
-var Slider,
+var Dropdown, Slider,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Slider = (function() {
@@ -108,4 +108,94 @@ Function.prototype.clone = function() {
   temp.__isClone = true;
   temp.__clonedFrom = cloned;
   return temp;
+};
+
+Dropdown = (function() {
+  Dropdown.CLASSES = {
+    HIDDEN: 'drop-down-hidden',
+    SHOWN: 'drop-down-shown',
+    TOGGLE: '.drop-down-toggle'
+  };
+
+  Dropdown.DATA_FIELDS = {
+    TO_HIDE: 'to-hide'
+  };
+
+  function Dropdown(_toggle, content) {
+    this._toggle = _toggle != null ? _toggle : Dropdown.CLASSES.TOGGLE;
+    this.content = content;
+    this.initiateOnClick = bind(this.initiateOnClick, this);
+    this.elements = {
+      toggle: $(this._toggle),
+      content: $(this.content)
+    };
+    if (!this.hasContent()) {
+      this.alternativeUsage();
+    }
+    this.initiateOnClick();
+  }
+
+  Dropdown.prototype.initiateOnClick = function() {
+    return this.elements.toggle.on('click', (function(_this) {
+      return function() {
+        return _this.toggle();
+      };
+    })(this));
+  };
+
+  Dropdown.prototype.alternativeUsage = function() {
+    var toHide;
+    toHide = this.elements.toggle.data(Dropdown.DATA_FIELDS.TO_HIDE);
+    if (toHide != null) {
+      this.content = toHide;
+      this.elements.content = $(toHide);
+      return this.hide();
+    }
+  };
+
+  Dropdown.prototype.hasContent = function() {
+    return this.elements.content.length > 0;
+  };
+
+  Dropdown.prototype.toggle = function() {
+    if (this.elements.content.hasClass(Dropdown.CLASSES.HIDDEN)) {
+      return this.show();
+    } else {
+      return this.hide();
+    }
+  };
+
+  Dropdown.prototype.show = function() {
+    this.elements.content.removeClass(Dropdown.CLASSES.HIDDEN);
+    return this.elements.content.addClass(Dropdown.CLASSES.SHOWN);
+  };
+
+  Dropdown.prototype.hide = function() {
+    this.elements.content.addClass(Dropdown.CLASSES.HIDDEN);
+    return this.elements.content.removeClass(Dropdown.CLASSES.SHOWN);
+  };
+
+  return Dropdown;
+
+})();
+
+Array.prototype.equals = function(array) {
+  var i, index, item, len;
+  if (!array) {
+    return false;
+  }
+  if (this.length !== array.length) {
+    return false;
+  }
+  for (index = i = 0, len = this.length; i < len; index = ++i) {
+    item = this[index];
+    if (item instanceof Array && array[index] instanceof Array) {
+      if (!item.equals(array[index])) {
+        return false;
+      }
+    } else if (this[index] !== array[index]) {
+      return false;
+    }
+  }
+  return true;
 };

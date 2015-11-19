@@ -22,24 +22,28 @@ SecondObject = (function(superClass) {
     faces = new Vertices();
     faces.fromArray(SecondObject.faces);
     object = new StateObject("second-object", vertices, GL.gl['TRIANGLES'], faces);
+    object.initialTranslation(Axis.TYPES.X, -10, true);
     color = new Vertices();
     color.fromArray(SecondObject.colors);
     color = new SimpleObject('color', color);
     object.color = color;
+    object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 1, 1];
     object.ondrag = function(positions) {
-      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.x / 5), [0, 1, 0]);
-      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(positions.deltas.y / 5), [1, 0, 0]);
+      this.rotateY(positions.deltas.x / 5);
+      return this.rotateX(positions.deltas.y / 5);
     };
-    object.onkeydown = function(ev) {
-      switch (ev.which) {
-        case 70:
-          mat4.translate(this.modelMatrix, this.modelMatrix, [13, 0, 1]);
-          return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(0), [0, 1, 0]);
-      }
-    };
-    object.ondraw = function() {
-      return mat4.translate(this.modelMatrix, this.modelMatrix, [-10, 0, 0]);
-    };
+
+    /*object.onkeydown = (ev) ->
+      switch ev.which
+        when 16
+          interval = setInterval =>
+            clearInterval interval if @transformationDone
+            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
+          , 10
+        when 70
+          mat4.translate @modelMatrix, @modelMatrix, [13, 0, 1]
+          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(0), [0, 1, 0]
+     */
     return object;
   };
 

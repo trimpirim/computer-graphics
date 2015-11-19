@@ -32,6 +32,12 @@ Utils = (function() {
     };
   };
 
+  Utils.array = function(obj) {
+    return Object.keys(obj).map(function(key) {
+      return obj[key];
+    });
+  };
+
   function Utils() {}
 
   return Utils;

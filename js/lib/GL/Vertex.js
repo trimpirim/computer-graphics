@@ -15,11 +15,12 @@ Vertex = (function(superClass) {
       y: this.y,
       z: this.z
     };
+    this.changed = {
+      x: 0,
+      y: 0,
+      z: 0
+    };
   }
-
-  Vertex.prototype.original = function(which) {
-    return this.originals[which];
-  };
 
   Vertex.prototype.fromArray = function(array) {
     Vertex.__super__.fromArray.call(this, array);
