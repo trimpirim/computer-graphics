@@ -10,7 +10,8 @@ gulp.task('coffee-clean', function(cb) {
 	del([
 		JS_DESTINATION + '**/*',
     '!' + JS_DESTINATION + 'lib',
-    '!' + JS_DESTINATION + 'lib/*'
+    '!' + JS_DESTINATION + 'lib/*',
+    '!' + JS_DESTINATION + 'lib/**/*'
 	], cb);
 });
 

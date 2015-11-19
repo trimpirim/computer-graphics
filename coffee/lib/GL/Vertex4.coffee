@@ -22,3 +22,9 @@ class Vertex4 extends Vertex
       @z = coordinate
     else if !@u?
       @u = coordinate
+
+  length: ->
+    return 4
+
+  toArray: ->
+    [@x, @y, @z, @u]

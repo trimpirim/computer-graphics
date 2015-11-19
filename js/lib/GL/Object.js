@@ -1,7 +1,7 @@
-var Object;
+var SimpleObject;
 
-Object = (function() {
-  Object.fromCSG = function(csg, name, mode) {
+SimpleObject = (function() {
+  SimpleObject.fromCSG = function(csg, name, mode) {
     var color, colors, faces, indexer, obj, vColor, vertices;
     indexer = new Indexer();
     faces = new Vertices();
@@ -28,13 +28,13 @@ Object = (function() {
       return v.color;
     });
     vColor.fromArray(colors);
-    color = new Object('color', vColor);
-    obj = new Object(name, vertices, mode, faces);
+    color = new SimpleObject('color', vColor);
+    obj = new SimpleObject(name, vertices, mode, faces);
     obj.color = color;
     return obj;
   };
 
-  function Object(name1, vertices1, mode1, faces1, coordinates, index) {
+  function SimpleObject(name1, vertices1, mode1, faces1, coordinates, index) {
     this.name = name1;
     this.vertices = vertices1;
     this.mode = mode1;
@@ -49,36 +49,23 @@ Object = (function() {
     this.onkeydown = null;
   }
 
-  Object.prototype.getVertices = function() {
+  SimpleObject.prototype.getVertices = function() {
     return this.vertices;
   };
 
-  Object.prototype.getName = function() {
+  SimpleObject.prototype.getName = function() {
     return this.name;
   };
 
-  Object.prototype.addBuffer = function(name, buffer) {
+  SimpleObject.prototype.addBuffer = function(name, buffer) {
     return this.buffers.add(name, buffer);
   };
 
-  Object.prototype.translate = function(matrix) {
-    return mat4.translate(Matrices.getMatrix('modelViewMatrix', matrix));
-  };
-
-  Object.prototype.rotate = function(matrix, angle, axis, radians) {
-    if (radians == null) {
-      radians = false;
-    }
-    if (!radians) {
-      return angle = MathUtils.toRadians(angle);
-    }
-  };
-
-  Object.prototype.compileBuffers = function() {
+  SimpleObject.prototype.compileBuffers = function() {
     return this.buffers.compile();
   };
 
-  Object.prototype.draw = function() {
+  SimpleObject.prototype.draw = function() {
     if (this.buffers.indexExist) {
       return GL.gl.drawElements(this.mode, this.faces.toArray().length, GL.gl['UNSIGNED_SHORT'], 0);
     } else {
@@ -86,7 +73,7 @@ Object = (function() {
     }
   };
 
-  Object.prototype.createColor = function(color) {
+  SimpleObject.prototype.createColor = function(color) {
     var i, j, k, l, m, rand, ref, vertex, vertices, x, z;
     if (color == null) {
       color = null;
@@ -112,11 +99,35 @@ Object = (function() {
           vertices.add(vertex);
         }
       }
-      color = new Object('color', vertices);
+      color = new SimpleObject('color', vertices);
       return this.color = color;
     }
   };
 
-  return Object;
+  SimpleObject.prototype.clone = function(obj) {
+    var copy, key, value;
+    if (obj == null) {
+      obj = this;
+    }
+    copy = new SimpleObject();
+    for (key in obj) {
+      value = obj[key];
+      if (obj.hasOwnProperty(key)) {
+        copy[key] = obj[key];
+      }
+    }
+    return copy;
+  };
+
+  SimpleObject.prototype.animate = function(interval, callback) {
+    var savedInterval;
+    return savedInterval = setInterval(function() {
+      if (callback != null) {
+        return callback(savedInterval);
+      }
+    }, interval);
+  };
+
+  return SimpleObject;
 
 })();

@@ -1,6 +1,15 @@
 class Vertex extends Vertex2
   constructor: (@x, @y, @z) ->
     super(@x, @y)
+    @originals =
+      x: @x
+      y: @y
+      z: @z
+
+    @changed = 
+      x: 0
+      y: 0
+      z: 0
 
   fromArray: (array) ->
     super(array)
@@ -20,3 +29,9 @@ class Vertex extends Vertex2
       @y = coordinate
     else if !@z?
       @z = coordinate
+
+  length: ->
+    return 3
+
+  toArray: ->
+    [@x, @y, @z]

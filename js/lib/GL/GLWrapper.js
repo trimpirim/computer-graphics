@@ -6,6 +6,8 @@ GL = (function() {
 
   GL.canvas = null;
 
+  GL.camera = null;
+
   GL.getGL = function() {
     return this.gl;
   };
@@ -14,9 +16,16 @@ GL = (function() {
     return this.gl = gl;
   };
 
+  GL.setCamera = function(camera) {
+    if (this.camera == null) {
+      return this.camera = camera;
+    }
+  };
+
   function GL() {
-    this.drawSceneAndAnimate = bind(this.drawSceneAndAnimate, this);
+    this.runRenderLoop = bind(this.runRenderLoop, this);
     this.gl = null;
+    this.camera = null;
     GL.canvas = document.getElementById('canvas');
     this.shaders = new Shaders();
     this.objects = new Objects();
@@ -49,6 +58,13 @@ GL = (function() {
   GL.prototype.setGL = function(gl) {
     GL.setGL(gl);
     return this.gl = gl;
+  };
+
+  GL.prototype.setCamera = function(camera) {
+    GL.setCamera(camera);
+    if (this.camera == null) {
+      return this.camera = camera;
+    }
   };
 
   GL.prototype.initShaders = function() {
@@ -103,21 +119,27 @@ GL = (function() {
   GL.prototype.drawScene = function() {
     this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-    mat4.perspective(Matrices.getMatrix('projectionMatrix'), 45, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 1000.0);
-    mat4.identity(Matrices.getMatrix('modelViewMatrix'));
-    mat4.translate(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), [0, 0, -1]);
-    this.setMatrixUniform(this.shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix'));
+    GL.setCamera(new Camera());
+    GL.camera.draw();
     return this.loadObjects();
+  };
+
+  GL.prototype.loopOnlyShapes = function(callback) {
+    return this.objects.loopOnlyShapes(function(item, index) {
+      if (callback != null) {
+        return callback(item);
+      }
+    });
   };
 
   GL.prototype.loadObjects = function() {
     this.gl.uniform1f(this.shaderProgram.pointSize, 5.0);
     return this.objects.loopOnlyShapes((function(_this) {
       return function(item, index) {
-        Matrices.pushMatrix('modelViewMatrix');
         if (item.coordinates != null) {
           mat4.translate(Matrices.getMatrix('modelViewMatrix'), item.coordinates);
         }
+        Matrices.pushMatrix('modelViewMatrix');
         mat4.multiply(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix);
         _this.loadBuffers(item);
         if (item.color != null) {
@@ -164,12 +186,12 @@ GL = (function() {
     this.initObjects();
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
-    this.drawSceneAndAnimate();
+    this.runRenderLoop();
     return this.ondraw();
   };
 
-  GL.prototype.drawSceneAndAnimate = function() {
-    requestAnimFrame(this.drawSceneAndAnimate);
+  GL.prototype.runRenderLoop = function() {
+    requestAnimFrame(this.runRenderLoop);
     return this.drawScene();
   };
 
@@ -189,11 +211,12 @@ GL = (function() {
   GL.prototype.onkeydown = function() {
     return GL.canvas.addEventListener('keydown', (function(_this) {
       return function(ev) {
-        return _this.objects.loopOnlyShapes(function(item) {
+        _this.objects.loopOnlyShapes(function(item) {
           if (item.onkeydown != null) {
             return item.onkeydown(ev);
           }
         });
+        return GL.camera.update(ev);
       };
     })(this), false);
   };
@@ -202,6 +225,14 @@ GL = (function() {
     return this.objects.loopOnlyShapes(function(item) {
       if (item.ondraw != null) {
         return item.ondraw();
+      }
+    });
+  };
+
+  GL.prototype.onredraw = function() {
+    return this.objects.loopOnlyShapes(function(item) {
+      if (item.onredraw != null) {
+        return item.onredraw();
       }
     });
   };

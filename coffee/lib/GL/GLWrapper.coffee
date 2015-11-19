@@ -1,14 +1,20 @@
 class GL
   @gl: null
   @canvas: null
+  @camera: null
   @getGL: ->
     @gl
 
   @setGL: (gl) ->
     @gl = gl
 
+  @setCamera: (camera) ->
+    if !@camera?
+      @camera = camera
+
   constructor: () ->
     @gl = null
+    @camera = null
     #@canvas = document.getElementById 'canvas'
     GL.canvas = document.getElementById 'canvas'
     @shaders = new Shaders()
@@ -35,6 +41,10 @@ class GL
   setGL: (gl) ->
     GL.setGL gl
     @gl = gl
+
+  setCamera: (camera) ->
+    GL.setCamera camera
+    @camera = camera if !@camera?
 
   initShaders: () ->
     fShader = @shaders.getShader @gl, 'shader-fs'
@@ -81,21 +91,24 @@ class GL
     @gl.viewport 0, 0, @gl.viewportWidth, @gl.viewportHeight
     @gl.clear @gl.COLOR_BUFFER_BIT | @gl.DEPTH_BUFFER_BIT
 
-    mat4.perspective Matrices.getMatrix('projectionMatrix'), 45, @gl.viewportWidth / @gl.viewportHeight, 0.1, 1000.0
-    mat4.identity Matrices.getMatrix('modelViewMatrix')
-    mat4.translate Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), [0, 0, -1]
-
-    @setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
+    GL.setCamera new Camera()
+    GL.camera.draw()
+    #mat4.rotate Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), MathUtils.toRadians(90), [1, 0, 0]
+    #@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
 
     @loadObjects()
+
+  loopOnlyShapes: (callback) ->
+    @objects.loopOnlyShapes (item, index) ->
+      callback item if callback?
 
   loadObjects: () ->
     @gl.uniform1f @shaderProgram.pointSize, 5.0
     
     @objects.loopOnlyShapes (item, index) =>
-      Matrices.pushMatrix 'modelViewMatrix'
-      #mat4.identity Matrices.getMatrix 'modelViewMatrix'
+      #item.ondraw() if item.ondraw?
       mat4.translate Matrices.getMatrix('modelViewMatrix'), item.coordinates if item.coordinates?
+      Matrices.pushMatrix 'modelViewMatrix'
       mat4.multiply Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix
       @loadBuffers item
       @loadColor item.color if item.color?
@@ -130,12 +143,13 @@ class GL
     @initObjects()
     @gl.clearColor 0.0, 0.0, 0.0, 1.0
     @gl.enable @gl.DEPTH_TEST
-    @drawSceneAndAnimate()
+    @runRenderLoop()
     @ondraw()
     #drawScene()
 
-  drawSceneAndAnimate: () =>
-    requestAnimFrame @drawSceneAndAnimate
+  runRenderLoop: () =>
+    requestAnimFrame @runRenderLoop
+    #@onredraw()
     @drawScene()
 
   ondrag: () ->
@@ -148,8 +162,13 @@ class GL
     GL.canvas.addEventListener 'keydown', (ev) =>
       @objects.loopOnlyShapes (item) ->
         item.onkeydown ev if item.onkeydown?
+      GL.camera.update ev
     , false
 
   ondraw: () ->
     @objects.loopOnlyShapes (item) ->
       item.ondraw() if item.ondraw?
+
+  onredraw: ->
+    @objects.loopOnlyShapes (item) ->
+      item.onredraw() if item.onredraw?

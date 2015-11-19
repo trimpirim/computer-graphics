@@ -4,7 +4,10 @@
     <style>
       body { margin: 0; }
     </style>
-    <script src="js/lib/jquery-2.1.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/second-task.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="js/lib/jquery-2.1.4.js"></script>
+    <script src="js/lib/jquery-ui-1.11.4/jquery-ui.min.js"></script>
     <script src="js/lib/glMatrix-2.2.2.min.js"></script>
     <script src="js/lib/webgl-utils.js"></script>
     <script src="js/lib/shapes-utils.js"></script>
@@ -30,13 +33,236 @@
 
       void main(void) {
         gl_PointSize = pointSize;
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 5.0); 
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0); 
         vColor = aVertexColor;
       }
     </script>
   </head>
   <body>
     <canvas id="canvas" style="border: none;" tabindex="0"></canvas>
+
+    <div class="options">
+      <ul class="list camera">
+        <li class="heading drop-down-toggle-camera" data-to-hide=".drop-down-camera">
+          <a href="javascript:void(0);">
+            CAMERA
+          </a>
+        </li>
+        <li class="drop-down-camera">
+          <span>
+            translate
+          </span>
+          <ul class="inner">
+            <li class="translate-x row">
+              <span class="direction">
+                x
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="translate-y row">
+              <span class="direction">
+                y
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="translate-z row">
+              <span class="direction">
+                z
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+          </ul>
+        </li>
+        <li class="drop-down-camera">
+          <span>
+            rotate
+          </span>
+          <ul class="inner">
+            <li class="rotate-x row">
+              <span class="direction">
+                x
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="rotate-y row">
+              <span class="direction">
+                y
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="rotate-z row">
+              <span class="direction">
+                z
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+          </ul>
+        </li>
+        <li class="drop-down-camera">
+          <span>
+            scale
+          </span>
+          <ul class="inner">
+            <li class="scale-x row">
+              <span class="direction">
+                x
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="scale-y row">
+              <span class="direction">
+                y
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="scale-z row">
+              <span class="direction">
+                z
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="list model">
+        <li class="heading drop-down-toggle-model" data-to-hide=".drop-down-model">
+          <a href="javascript:void(0);">
+            MODEL
+          </a>
+        </li>
+        <li class="drop-down-model">
+          <span>
+            translate
+          </span>
+          <ul class="inner">
+            <li class="translate-x row">
+              <span class="direction">
+                x
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="translate-y row">
+              <span class="direction">
+                y
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="translate-z row">
+              <span class="direction">
+                z
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+          </ul>
+        </li>
+        <li class="drop-down-model">
+          <span>
+            rotate
+          </span>
+          <ul class="inner">
+            <li class="rotate-x row">
+              <span class="direction">
+                x
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="rotate-y row">
+              <span class="direction">
+                y
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="rotate-z row">
+              <span class="direction">
+                z
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+          </ul>
+        </li>
+        <li class="drop-down-model">
+          <span>
+            scale
+          </span>
+          <ul class="inner">
+            <li class="scale-x row">
+              <span class="direction">
+                x
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="scale-y row">
+              <span class="direction">
+                y
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+            <li class="scale-z row">
+              <span class="direction">
+                z
+              </span>
+              <div id="slider">
+              </div>
+              <span class="number">
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <script src="js/core.js"></script>
     <script src="js/lib/GL/Draggable.js"></script>
     <script src="js/lib/GL/Utils.js"></script>
     <script src="js/lib/GL/MathUtils.js"></script>
@@ -46,6 +272,11 @@
     <script src="js/lib/GL/Vertex.js"></script>
     <script src="js/lib/GL/Vertex4.js"></script>
     <script src="js/lib/GL/Buffers.js"></script>
+    <script src="js/lib/GL/Axis.js"></script>
+    <script src="js/lib/GL/ScaleState.js"></script>
+    <script src="js/lib/GL/RotationState.js"></script>
+    <script src="js/lib/GL/TranslationState.js"></script>
+    <script src="js/lib/GL/Camera.js"></script>
     <script src="js/lib/GL/Indexer.js"></script>
     <script src="js/lib/GL/Buffer.js"></script>
     <script src="js/lib/GL/Matrices.js"></script>
@@ -54,15 +285,18 @@
     <script src="js/lib/GL/Color.js"></script>
     <script src="js/lib/GL/Objects.js"></script>
     <script src="js/lib/GL/Shaders.js"></script>
+
+    <script src="js/second-task/StateObject.js"></script>
+
+    <script src="js/second-task/FirstObject.js"></script>
+    <script src="js/second-task/SecondObject.js"></script>
+    <script src="js/second-task/ThirdObject.js"></script>
+    <script src="js/second-task/ForthObject.js"></script>
+    <script src="js/second-task/FifthObject.js"></script>
+    <script src="js/second-task/SixthObject.js"></script>
+    <script src="js/second-task/SeventhObject.js"></script>
     <script src="js/Run.js"></script>
-    <!--<script src="js/EdgeAxis.js"></script>
-    <script src="js/VertexAxis.js"></script>
-    <script src="js/FaceAxis.js"></script>
-    <script src="js/RunSomeFigure.js"></script>-->
-    <!--<script src="js/Triangle.js"></script>
-    <script src="js/RunTriangle.js"></script>-->
-    <script src="js/Fractal.js"></script>
-    <script src="js/RunFractal.js"></script>
+    <script src="js/second-task/RunSecondTask.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

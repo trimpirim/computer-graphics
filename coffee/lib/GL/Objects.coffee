@@ -64,6 +64,6 @@ class Objects
 
   loopOnlyShapes: (callback) ->
     @loopAll (item, index) =>
-      if item instanceof Object
+      if item instanceof SimpleObject
         callback item, index if callback?
 

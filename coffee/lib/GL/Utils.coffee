@@ -27,4 +27,7 @@ class Utils
             y: y
         }
 
+    @array: (obj) ->
+        Object.keys(obj).map (key) -> obj[key]
+
     constructor: () ->

@@ -10,6 +10,16 @@ Vertex = (function(superClass) {
     this.y = y;
     this.z = z;
     Vertex.__super__.constructor.call(this, this.x, this.y);
+    this.originals = {
+      x: this.x,
+      y: this.y,
+      z: this.z
+    };
+    this.changed = {
+      x: 0,
+      y: 0,
+      z: 0
+    };
   }
 
   Vertex.prototype.fromArray = function(array) {
@@ -42,6 +52,14 @@ Vertex = (function(superClass) {
     } else if (this.z == null) {
       return this.z = coordinate;
     }
+  };
+
+  Vertex.prototype.length = function() {
+    return 3;
+  };
+
+  Vertex.prototype.toArray = function() {
+    return [this.x, this.y, this.z];
   };
 
   return Vertex;

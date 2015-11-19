@@ -21,4 +21,4 @@ Shape = (function(superClass) {
 
   return Shape;
 
-})(Object);
+})(SimpleObject);

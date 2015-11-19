@@ -17,4 +17,4 @@ Color = (function(superClass) {
 
   return Color;
 
-})(Object);
+})(SimpleObject);

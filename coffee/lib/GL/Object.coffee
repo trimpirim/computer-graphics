@@ -1,4 +1,4 @@
-class Object 
+class SimpleObject
   @fromCSG: (csg, name, mode) ->
     indexer = new Indexer()
     faces = new Vertices()
@@ -19,9 +19,9 @@ class Object
 
     vColor.fromArray colors
 
-    color = new Object 'color', vColor
+    color = new SimpleObject 'color', vColor
 
-    obj = new Object name, vertices, mode, faces
+    obj = new SimpleObject name, vertices, mode, faces
     obj.color = color
     obj
 
@@ -42,14 +42,6 @@ class Object
 
   addBuffer: (name, buffer) ->
     @buffers.add name, buffer
-
-  translate: (matrix) ->
-    mat4.translate Matrices.getMatrix 'modelViewMatrix', matrix
-
-  rotate: (matrix, angle, axis, radians = false) ->
-    angle = MathUtils.toRadians angle if !radians
-    #mat4.rotate matrix, angle, axis
-    #mat4.multiply matrix, @modelMatrix, @modelMatrix
 
   compileBuffers: () ->
     @buffers.compile()
@@ -82,8 +74,24 @@ class Object
           vertices.add vertex
 
 
-      color = new Object 'color', vertices
+      color = new SimpleObject 'color', vertices
 
       @color = color
+
+  clone: (obj) ->
+    if !obj?
+      obj = @
+
+    copy = new SimpleObject()
+    for key, value of obj
+      if obj.hasOwnProperty(key)
+        copy[key] = obj[key]
+
+    return copy
+
+  animate: (interval, callback) ->
+    savedInterval = setInterval ->
+      callback(savedInterval) if callback?
+    , interval
 
 
