@@ -33,10 +33,6 @@ FirstObject = (function(superClass) {
     color = new SimpleObject('color', color);
     object.color = color;
     object.endMatrix = [-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 5, 0, -3, 1];
-    object.ondrag = function(positions) {
-      this.rotateY(positions.deltas.x / 5, false);
-      return this.rotateX(positions.deltas.y / 5, false);
-    };
 
     /*object.onkeydown = (ev) ->
       switch ev.which

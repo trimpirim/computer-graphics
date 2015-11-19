@@ -10,7 +10,7 @@ class Vertex2
 
   original: (which, amount) ->
     if amount?
-      @original[which] = amount
+      @originals[which] = amount
       @changed[which] = amount
     @originals[which]
 

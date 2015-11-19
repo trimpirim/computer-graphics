@@ -101,9 +101,9 @@ class SecondObject extends Shape
 
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 1, 1]
 
-    object.ondrag = (positions) ->
+    ###object.ondrag = (positions) ->
       @rotateY positions.deltas.x / 5
-      @rotateX positions.deltas.y / 5
+      @rotateX positions.deltas.y / 5###
 
     ###object.onkeydown = (ev) ->
       switch ev.which

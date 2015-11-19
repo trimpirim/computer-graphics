@@ -28,10 +28,11 @@ SecondObject = (function(superClass) {
     color = new SimpleObject('color', color);
     object.color = color;
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 1, 1];
-    object.ondrag = function(positions) {
-      this.rotateY(positions.deltas.x / 5);
-      return this.rotateX(positions.deltas.y / 5);
-    };
+
+    /*object.ondrag = (positions) ->
+      @rotateY positions.deltas.x / 5
+      @rotateX positions.deltas.y / 5
+     */
 
     /*object.onkeydown = (ev) ->
       switch ev.which

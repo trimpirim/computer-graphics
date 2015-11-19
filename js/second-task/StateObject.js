@@ -33,6 +33,9 @@ StateObject = (function(superClass) {
           })(this), 20);
       }
     };
+    this.ondrag = function(positions) {
+      return null;
+    };
   }
 
   StateObject.prototype.rotate = function(which, amount) {
@@ -47,16 +50,12 @@ StateObject = (function(superClass) {
   };
 
   StateObject.prototype.rotateX = function(amount, force) {
-    var mat;
     if (force == null) {
       force = false;
     }
     this.rotation.change(Axis.TYPES.X, amount);
     if (force) {
-      mat = mat4.create();
-      mat4.copy(mat, this.original);
-      mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
-      return this.modelMatrix = mat;
+      return this.modelMatrix = this.generateModel();
     } else {
       mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
       return this.original = this.modelMatrix;
@@ -64,16 +63,12 @@ StateObject = (function(superClass) {
   };
 
   StateObject.prototype.rotateY = function(amount, force) {
-    var mat;
     if (force == null) {
       force = false;
     }
     this.rotation.change(Axis.TYPES.Y, amount);
     if (force) {
-      mat = mat4.create();
-      mat4.copy(mat, this.original);
-      mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
-      return this.modelMatrix = mat;
+      return this.modelMatrix = this.generateModel();
     } else {
       mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
       return this.original = this.modelMatrix;
@@ -81,16 +76,12 @@ StateObject = (function(superClass) {
   };
 
   StateObject.prototype.rotateZ = function(amount, force) {
-    var mat;
     if (force == null) {
       force = false;
     }
     this.rotation.change(Axis.TYPES.Z, amount);
     if (force) {
-      mat = mat4.create();
-      mat4.copy(mat, this.original);
-      mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
-      return this.modelMatrix = mat;
+      return this.modelMatrix = this.generateModel();
     } else {
       mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
       return this.original = this.modelMatrix;
@@ -106,16 +97,12 @@ StateObject = (function(superClass) {
   };
 
   StateObject.prototype.translate = function(which, amount, force) {
-    var mat;
     if (force == null) {
       force = false;
     }
     this.translation.change(which, amount);
     if (force) {
-      mat = mat4.create();
-      mat4.copy(mat, this.original);
-      mat4.translate(mat, mat, this.translation.toArray());
-      return this.modelMatrix = mat;
+      return this.modelMatrix = this.generateModel();
     }
   };
 
@@ -156,6 +143,16 @@ StateObject = (function(superClass) {
     this.translate(which, amount, force);
     this.translation.original(which, amount);
     return this.original = this.modelMatrix;
+  };
+
+  StateObject.prototype.generateModel = function() {
+    var mat;
+    mat = mat4.create();
+    mat4.translate(mat, mat, this.translation.toArray());
+    mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
+    mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
+    mat4.rotate(mat, mat, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
+    return mat;
   };
 
   return StateObject;

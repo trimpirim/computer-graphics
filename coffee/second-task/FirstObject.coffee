@@ -88,10 +88,6 @@ class FirstObject extends Shape
 
     object.endMatrix = [-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 5, 0, -3, 1]
 
-    object.ondrag = (positions) ->
-      @rotateY positions.deltas.x / 5, false
-      @rotateX positions.deltas.y / 5, false
-
     ###object.onkeydown = (ev) ->
       switch ev.which
         when 16

@@ -18,6 +18,11 @@ class StateObject extends SimpleObject
 						@modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
 					, 20
 
+		@ondrag = (positions) ->
+			null
+      #@rotateY positions.deltas.x / 5, false
+      #@rotateX positions.deltas.y / 5, false
+
 	rotate: (which, amount) ->
 		switch which
 			when Axis.TYPES.X
@@ -30,10 +35,7 @@ class StateObject extends SimpleObject
 	rotateX: (amount, force = false) ->
 		@rotation.change Axis.TYPES.X, amount
 		if force
-			mat = mat4.create()
-			mat4.copy mat, @original
-			mat4.rotate mat, mat, MathUtils.toRadians(@rotation.x), [1, 0, 0]
-			@modelMatrix = mat
+			@modelMatrix = @generateModel()
 		else
 			mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(@rotation.x), [1, 0, 0]
 			@original = @modelMatrix
@@ -41,10 +43,7 @@ class StateObject extends SimpleObject
 	rotateY: (amount, force = false) ->
 		@rotation.change Axis.TYPES.Y, amount
 		if force
-			mat = mat4.create()
-			mat4.copy mat, @original
-			mat4.rotate mat, mat, MathUtils.toRadians(@rotation.y), [0, 1, 0]
-			@modelMatrix = mat
+			@modelMatrix = @generateModel()
 		else
 			mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(@rotation.y), [0, 1, 0]
 			@original = @modelMatrix
@@ -52,10 +51,7 @@ class StateObject extends SimpleObject
 	rotateZ: (amount, force = false) ->
 		@rotation.change Axis.TYPES.Z, amount
 		if force
-			mat = mat4.create()
-			mat4.copy mat, @original
-			mat4.rotate mat, mat, MathUtils.toRadians(@rotation.z), [0, 0, 1]
-			@modelMatrix = mat
+			@modelMatrix = @generateModel()
 		else
 			mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(@rotation.z), [0, 0, 1]
 			@original = @modelMatrix
@@ -67,12 +63,7 @@ class StateObject extends SimpleObject
 	translate: (which, amount, force = false) ->
 		@translation.change which, amount
 		if force
-			mat = mat4.create()
-			mat4.copy mat, @original
-			mat4.translate mat, mat, @translation.toArray()
-			@modelMatrix = mat
-			#mat4.multiply @modelMatrix, @modelMatrix, mat
-      #mat4.translate @modelMatrix, @modelMatrix, @translation.toArray()
+			@modelMatrix = @generateModel()
 
 	scale: (which, amount) ->
 		@scale.change which, amount
@@ -104,6 +95,14 @@ class StateObject extends SimpleObject
 		@translate which, amount, force
 		@translation.original which, amount
 		@original = @modelMatrix
+
+	generateModel: ->
+		mat = mat4.create()
+		mat4.translate mat, mat, @translation.toArray()
+		mat4.rotate mat, mat, MathUtils.toRadians(@rotation.x), [1, 0, 0]
+		mat4.rotate mat, mat, MathUtils.toRadians(@rotation.y), [0, 1, 0]
+		mat4.rotate mat, mat, MathUtils.toRadians(@rotation.z), [0, 0, 1]
+		return mat
 
 
 

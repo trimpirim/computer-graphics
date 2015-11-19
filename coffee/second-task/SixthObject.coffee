@@ -109,9 +109,9 @@ class SixthObject extends Shape
     color = new SimpleObject 'color', color
     object.color = color
 
-    object.ondrag = (positions) ->
+    ###object.ondrag = (positions) ->
       @rotateY positions.deltas.x / 5
-      @rotateX positions.deltas.y / 5
+      @rotateX positions.deltas.y / 5###
 
     ###object.onkeydown = (ev) ->
       switch ev.which

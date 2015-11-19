@@ -16,7 +16,7 @@ Vertex2 = (function() {
 
   Vertex2.prototype.original = function(which, amount) {
     if (amount != null) {
-      this.original[which] = amount;
+      this.originals[which] = amount;
       this.changed[which] = amount;
     }
     return this.originals[which];

@@ -41,10 +41,11 @@ SeventhObject = (function(superClass) {
     color.fromArray(SeventhObject.colors);
     color = new SimpleObject('color', color);
     object.color = color;
-    object.ondrag = function(positions) {
-      this.rotateY(positions.deltas.x / 5);
-      return this.rotateX(positions.deltas.y / 5);
-    };
+
+    /*object.ondrag = (positions) ->
+      @rotateY positions.deltas.x / 5
+      @rotateX positions.deltas.y / 5
+     */
 
     /*object.onkeydown = (ev) ->
       switch ev.which

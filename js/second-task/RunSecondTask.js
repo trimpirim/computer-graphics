@@ -42,7 +42,7 @@ RunSecondTask = (function(superClass) {
   };
 
   RunSecondTask.prototype.initiateSliders = function() {
-    this.initiateSlider('translate-y', '.camera .translate-y #slider', '.camera .translate-y span.number', {
+    this.initiateSlider('camera-translate-y', '.camera .translate-y #slider', '.camera .translate-y span.number', {
       slide: function(event, ui) {
         return GL.camera.translation.change('y', ui.value);
       },
@@ -50,7 +50,7 @@ RunSecondTask = (function(superClass) {
       max: 50,
       value: 0
     });
-    this.initiateSlider('translate-x', '.camera .translate-x #slider', '.camera .translate-x span.number', {
+    this.initiateSlider('camera-translate-x', '.camera .translate-x #slider', '.camera .translate-x span.number', {
       slide: function(event, ui) {
         return GL.camera.translation.change('x', ui.value);
       },
@@ -58,7 +58,7 @@ RunSecondTask = (function(superClass) {
       max: 50,
       value: 0
     });
-    this.initiateSlider('translate-z', '.camera .translate-z #slider', '.camera .translate-z span.number', {
+    this.initiateSlider('camera-translate-z', '.camera .translate-z #slider', '.camera .translate-z span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           var original;
@@ -76,25 +76,25 @@ RunSecondTask = (function(superClass) {
       value: 0,
       max: 5
     });
-    this.initiateSlider('rotate-x', '.rotate-x #slider', '.rotate-x span.number', {
+    this.initiateSlider('camera-rotate-x', '.rotate-x #slider', '.rotate-x span.number', {
       slide: function(event, ui) {
         return GL.camera.rotation.change('x', ui.value);
       },
       max: 180
     });
-    this.initiateSlider('rotate-y', '.rotate-y #slider', '.rotate-y span.number', {
+    this.initiateSlider('camera-rotate-y', '.rotate-y #slider', '.rotate-y span.number', {
       slide: function(event, ui) {
         return GL.camera.rotation.change('y', ui.value);
       },
       max: 180
     });
-    this.initiateSlider('rotate-z', '.rotate-z #slider', '.rotate-z span.number', {
+    this.initiateSlider('camera-rotate-z', '.rotate-z #slider', '.rotate-z span.number', {
       slide: function(event, ui) {
         return GL.camera.rotation.change('z', ui.value);
       },
       max: 180
     });
-    this.initiateSlider('scale-x', '.scale-x #slider', '.scale-x span.number', {
+    this.initiateSlider('camerea-scale-x', '.scale-x #slider', '.scale-x span.number', {
       slide: function(event, ui) {
         return GL.camera.scale.change('x', ui.value);
       },
@@ -103,7 +103,7 @@ RunSecondTask = (function(superClass) {
       step: 0.05,
       value: 1
     });
-    this.initiateSlider('scale-y', '.scale-y #slider', '.scale-y span.number', {
+    this.initiateSlider('camerea-scale-y', '.scale-y #slider', '.scale-y span.number', {
       slide: function(event, ui) {
         return GL.camera.scale.change('y', ui.value);
       },
@@ -112,7 +112,7 @@ RunSecondTask = (function(superClass) {
       step: 0.05,
       value: 1
     });
-    this.initiateSlider('scale-z', '.scale-z #slider', '.scale-z span.number', {
+    this.initiateSlider('camerea-scale-z', '.scale-z #slider', '.scale-z span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return GL.camera.scale.change('z', ui.value);
@@ -125,7 +125,7 @@ RunSecondTask = (function(superClass) {
     });
 
     /* model */
-    this.initiateSlider('translate-y', '.model .translate-y #slider', '.model .translate-y span.number', {
+    this.initiateSlider('model-translate-y', '.model .translate-y #slider', '.model .translate-y span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return _this.gl.loopOnlyShapes(function(object) {
@@ -139,7 +139,7 @@ RunSecondTask = (function(superClass) {
       max: 50,
       value: 0
     });
-    this.initiateSlider('translate-x', '.model .translate-x #slider', '.model .translate-x span.number', {
+    this.initiateSlider('model-translate-x', '.model .translate-x #slider', '.model .translate-x span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return _this.gl.loopOnlyShapes(function(object) {
@@ -153,7 +153,7 @@ RunSecondTask = (function(superClass) {
       max: 50,
       value: 0
     });
-    this.initiateSlider('translate-z', '.model .translate-z #slider', '.model .translate-z span.number', {
+    this.initiateSlider('model-translate-z', '.model .translate-z #slider', '.model .translate-z span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return _this.gl.loopOnlyShapes(function(object) {
@@ -173,7 +173,7 @@ RunSecondTask = (function(superClass) {
       value: 0,
       max: 5
     });
-    this.initiateSlider('rotate-x', '.model .rotate-x #slider', '.model .rotate-x span.number', {
+    this.initiateSlider('model-rotate-x', '.model .rotate-x #slider', '.model .rotate-x span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return _this.gl.loopOnlyShapes(function(object) {
@@ -185,7 +185,7 @@ RunSecondTask = (function(superClass) {
       })(this),
       max: 180
     });
-    this.initiateSlider('rotate-y', '.model .rotate-y #slider', '.model .rotate-y span.number', {
+    this.initiateSlider('model-rotate-y', '.model .rotate-y #slider', '.model .rotate-y span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return _this.gl.loopOnlyShapes(function(object) {
@@ -197,7 +197,7 @@ RunSecondTask = (function(superClass) {
       })(this),
       max: 180
     });
-    return this.initiateSlider('rotate-z', '.model .rotate-z #slider', '.model .rotate-z span.number', {
+    return this.initiateSlider('model-rotate-z', '.model .rotate-z #slider', '.model .rotate-z span.number', {
       slide: (function(_this) {
         return function(event, ui) {
           return _this.gl.loopOnlyShapes(function(object) {
