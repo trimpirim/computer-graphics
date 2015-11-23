@@ -13,6 +13,10 @@ class Camera
 		mat4.rotateZ Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), MathUtils.toRadians(@rotation.z)
 		mat4.scale Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), [@scale.x, @scale.y, @scale.z]
 
+	ondrag: (positions) ->
+		@rotation.increase Axis.TYPES.Y, positions.deltas.x / 5
+		@rotation.increase Axis.TYPES.X, positions.deltas.y / 5
+
 	update: (ev) ->
 		switch ev.which
 			when 33 #page up

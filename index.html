@@ -13,28 +13,42 @@
     <script src="js/lib/shapes-utils.js"></script>
     <script src="js/lib/csg-utils.js"></script>
     <script id="shader-fs" type="x-shader/x-fragment">
-      precision mediump float;
+      precision highp float;
 
-      varying vec4 vColor;
+      uniform mat3 GLNormalMatrix;
+      uniform mat4 GLModelViewMatrix;
+      uniform mat4 GLProjectionMatrix;
+      uniform mat4 GLModelViewProjectionMatrix;
+      uniform mat4 GLModelViewMatrixInverse;
+      uniform mat4 GLProjectionMatrixInverse;
+      uniform mat4 GLModelViewProjectionMatrixInverse;
+      uniform float GLPointSize;
+
+      varying vec4 color;
 
       void main(void) {
-        gl_FragColor = vColor;
+        gl_FragColor = color;
       }
     </script>
     <script id="shader-vs" type="x-shader/x-vertex">
-      attribute vec3 aVertexPosition;
-      attribute vec4 aVertexColor;
+      uniform mat3 GLNormalMatrix;
+      uniform mat4 GLModelViewMatrix;
+      uniform mat4 GLProjectionMatrix;
+      uniform mat4 GLModelViewProjectionMatrix;
+      uniform mat4 GLModelViewMatrixInverse;
+      uniform mat4 GLProjectionMatrixInverse;
+      uniform mat4 GLModelViewProjectionMatrixInverse;
+      uniform float GLPointSize;
 
-      uniform mat4 uMVMatrix;
-      uniform mat4 uPMatrix;
-      uniform float pointSize;
+      attribute vec3 GLPosition;
+      attribute vec4 GLColor;
 
-      varying vec4 vColor;
+      varying vec4 color;
 
       void main(void) {
-        gl_PointSize = pointSize;
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0); 
-        vColor = aVertexColor;
+        gl_PointSize = GLPointSize;
+        gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0); 
+        color = GLColor;
       }
     </script>
   </head>
@@ -263,6 +277,7 @@
     </div>
 
     <script src="js/core.js"></script>
+    <script src="js/lib/GL/ListObject.js"></script>
     <script src="js/lib/GL/Draggable.js"></script>
     <script src="js/lib/GL/Utils.js"></script>
     <script src="js/lib/GL/MathUtils.js"></script>
@@ -286,8 +301,9 @@
     <script src="js/lib/GL/Objects.js"></script>
     <script src="js/lib/GL/Shaders.js"></script>
 
-    <script src="js/second-task/StateObject.js"></script>
+    <script src="js/lib/GL/StateObject.js"></script>
 
+    <script src="js/second-task/SecondTaskObject.js"></script>
     <script src="js/second-task/FirstObject.js"></script>
     <script src="js/second-task/SecondObject.js"></script>
     <script src="js/second-task/ThirdObject.js"></script>

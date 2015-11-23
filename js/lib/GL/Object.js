@@ -43,10 +43,9 @@ SimpleObject = (function() {
     this.index = index;
     this.buffers = new Buffers();
     this.color = null;
+    this.normals = null;
     this.modelMatrix = mat4.create();
     mat4.identity(this.modelMatrix);
-    this.ondrag = null;
-    this.onkeydown = null;
   }
 
   SimpleObject.prototype.getVertices = function() {

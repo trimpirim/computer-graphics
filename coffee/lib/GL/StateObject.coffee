@@ -8,20 +8,6 @@ class StateObject extends SimpleObject
 
 		@endMatrix = mat4.create()
 		@transformationDone = false
-		@original = mat4.create()
-
-		@onkeydown = (ev) ->
-			switch ev.which
-				when 16
-					interval = setInterval =>
-						clearInterval interval if @transformationDone
-						@modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
-					, 20
-
-		@ondrag = (positions) ->
-			null
-      #@rotateY positions.deltas.x / 5, false
-      #@rotateX positions.deltas.y / 5, false
 
 	rotate: (which, amount) ->
 		switch which
@@ -38,7 +24,6 @@ class StateObject extends SimpleObject
 			@modelMatrix = @generateModel()
 		else
 			mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(@rotation.x), [1, 0, 0]
-			@original = @modelMatrix
 
 	rotateY: (amount, force = false) ->
 		@rotation.change Axis.TYPES.Y, amount
@@ -46,7 +31,6 @@ class StateObject extends SimpleObject
 			@modelMatrix = @generateModel()
 		else
 			mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(@rotation.y), [0, 1, 0]
-			@original = @modelMatrix
 
 	rotateZ: (amount, force = false) ->
 		@rotation.change Axis.TYPES.Z, amount
@@ -54,7 +38,6 @@ class StateObject extends SimpleObject
 			@modelMatrix = @generateModel()
 		else
 			mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(@rotation.z), [0, 0, 1]
-			@original = @modelMatrix
 
 	translateOnce: (which, amount, force = true) ->
 		@translate which, amount, force
@@ -91,11 +74,6 @@ class StateObject extends SimpleObject
 
 		m
 
-	initialTranslation: (which, amount, force = false) ->
-		@translate which, amount, force
-		@translation.original which, amount
-		@original = @modelMatrix
-
 	generateModel: ->
 		mat = mat4.create()
 		mat4.translate mat, mat, @translation.toArray()
@@ -103,6 +81,3 @@ class StateObject extends SimpleObject
 		mat4.rotate mat, mat, MathUtils.toRadians(@rotation.y), [0, 1, 0]
 		mat4.rotate mat, mat, MathUtils.toRadians(@rotation.z), [0, 0, 1]
 		return mat
-
-
-

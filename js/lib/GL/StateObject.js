@@ -18,24 +18,6 @@ StateObject = (function(superClass) {
     this.scale = new ScaleState();
     this.endMatrix = mat4.create();
     this.transformationDone = false;
-    this.original = mat4.create();
-    this.onkeydown = function(ev) {
-      var interval;
-      switch (ev.which) {
-        case 16:
-          return interval = setInterval((function(_this) {
-            return function() {
-              if (_this.transformationDone) {
-                clearInterval(interval);
-              }
-              return _this.modelMatrix = _this.increaseMatrixBy(_this.modelMatrix, 0.1);
-            };
-          })(this), 20);
-      }
-    };
-    this.ondrag = function(positions) {
-      return null;
-    };
   }
 
   StateObject.prototype.rotate = function(which, amount) {
@@ -57,8 +39,7 @@ StateObject = (function(superClass) {
     if (force) {
       return this.modelMatrix = this.generateModel();
     } else {
-      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
-      return this.original = this.modelMatrix;
+      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.x), [1, 0, 0]);
     }
   };
 
@@ -70,8 +51,7 @@ StateObject = (function(superClass) {
     if (force) {
       return this.modelMatrix = this.generateModel();
     } else {
-      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
-      return this.original = this.modelMatrix;
+      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.y), [0, 1, 0]);
     }
   };
 
@@ -83,8 +63,7 @@ StateObject = (function(superClass) {
     if (force) {
       return this.modelMatrix = this.generateModel();
     } else {
-      mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
-      return this.original = this.modelMatrix;
+      return mat4.rotate(this.modelMatrix, this.modelMatrix, MathUtils.toRadians(this.rotation.z), [0, 0, 1]);
     }
   };
 
@@ -134,15 +113,6 @@ StateObject = (function(superClass) {
     })(this));
     this.transformationDone = Utils.array(m).equals(Utils.array(matrix));
     return m;
-  };
-
-  StateObject.prototype.initialTranslation = function(which, amount, force) {
-    if (force == null) {
-      force = false;
-    }
-    this.translate(which, amount, force);
-    this.translation.original(which, amount);
-    return this.original = this.modelMatrix;
   };
 
   StateObject.prototype.generateModel = function() {

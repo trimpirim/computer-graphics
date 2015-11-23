@@ -21,30 +21,13 @@ SixthObject = (function(superClass) {
     vertices.fromArray(SixthObject.vertices);
     faces = new Vertices();
     faces.fromArray(SixthObject.faces);
-    object = new StateObject("sixth-object", vertices, GL.gl['TRIANGLES'], faces);
+    object = new SecondTaskObject("sixth-object", vertices, GL.gl['TRIANGLES'], faces);
     object.initialTranslation(Axis.TYPES.X, 10, true);
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, -1, 1];
     color = new Vertices();
     color.fromArray(SixthObject.colors);
     color = new SimpleObject('color', color);
     object.color = color;
-
-    /*object.ondrag = (positions) ->
-      @rotateY positions.deltas.x / 5
-      @rotateX positions.deltas.y / 5
-     */
-
-    /*object.onkeydown = (ev) ->
-      switch ev.which
-        when 16
-          interval = setInterval =>
-            clearInterval interval if @transformationDone
-            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
-          , 10
-        when 70
-          #mat4.translate @modelMatrix, @modelMatrix, [4, 0, -1]
-          mat4.translate @modelMatrix, @modelMatrix, [-6, 0, -1]
-     */
     return object;
   };
 

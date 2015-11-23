@@ -98,7 +98,7 @@ class FifthObject extends Shape
     faces = new Vertices()
     faces.fromArray FifthObject.faces
 
-    object = new StateObject "fifth-object", vertices, GL.gl['TRIANGLES'], faces
+    object = new SecondTaskObject "fifth-object", vertices, GL.gl['TRIANGLES'], faces
     object.initialTranslation Axis.TYPES.X, 5, true
 
     object.endMatrix = [0, 0, 1, 0, 0, -1, 0, 0, 1, 0, 0, 0, 2, 0, 1, 1]
@@ -107,21 +107,5 @@ class FifthObject extends Shape
     color.fromArray FifthObject.colors
     color = new SimpleObject 'color', color
     object.color = color
-
-    ###object.ondrag = (positions) ->
-      @rotateY positions.deltas.x / 5
-      @rotateX positions.deltas.y / 5###
-
-    ###object.onkeydown = (ev) ->
-      switch ev.which
-        when 16
-          interval = setInterval =>
-            clearInterval interval if @transformationDone
-            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
-          , 10
-        when 70
-          mat4.translate @modelMatrix, @modelMatrix, [-3, 0, 1]
-          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(-180), [1, 0, 0]
-          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(90), [0, 1, 0]###
-
+    
     object

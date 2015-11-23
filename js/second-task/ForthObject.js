@@ -21,30 +21,13 @@ ForthObject = (function(superClass) {
     vertices.fromArray(ForthObject.vertices);
     faces = new Vertices();
     faces.fromArray(ForthObject.faces);
-    object = new StateObject("forth-object", vertices, GL.gl['TRIANGLES'], faces);
+    object = new SecondTaskObject("forth-object", vertices, GL.gl['TRIANGLES'], faces);
     object.initialTranslation(Axis.TYPES.X, 0, true);
     object.endMatrix = [1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 3, 0, -1, 1];
     color = new Vertices();
     color.fromArray(ForthObject.colors);
     color = new SimpleObject('color', color);
     object.color = color;
-
-    /*object.ondrag = (positions) ->
-      @rotateY positions.deltas.x / 5
-      @rotateX positions.deltas.y / 5
-     */
-
-    /*object.onkeydown = (ev) ->
-      switch ev.which
-        when 16
-          interval = setInterval =>
-            clearInterval interval if @transformationDone
-            @modelMatrix = @increaseMatrixBy @modelMatrix, 0.1
-          , 10
-        when 70
-          mat4.translate @modelMatrix, @modelMatrix, [3, 0, -1]
-          mat4.rotate @modelMatrix, @modelMatrix, MathUtils.toRadians(-90), [1, 0, 0]
-     */
     return object;
   };
 

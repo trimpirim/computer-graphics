@@ -1,4 +1,4 @@
-class Shaders 
+class Shaders extends ListObject
   construct: () ->
 
   getShaderTypeAndContent: (id) ->

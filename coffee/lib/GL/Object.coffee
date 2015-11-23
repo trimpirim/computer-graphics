@@ -29,10 +29,9 @@ class SimpleObject
   constructor: (@name, @vertices, @mode, @faces, @coordinates, @index) ->
     @buffers = new Buffers()
     @color = null
+    @normals = null
     @modelMatrix = mat4.create()
     mat4.identity @modelMatrix
-    @ondrag = null
-    @onkeydown = null
 
   getVertices: () ->
     @vertices

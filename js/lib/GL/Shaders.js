@@ -1,7 +1,13 @@
-var Shaders;
+var Shaders,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-Shaders = (function() {
-  function Shaders() {}
+Shaders = (function(superClass) {
+  extend(Shaders, superClass);
+
+  function Shaders() {
+    return Shaders.__super__.constructor.apply(this, arguments);
+  }
 
   Shaders.prototype.construct = function() {};
 
@@ -59,4 +65,4 @@ Shaders = (function() {
 
   return Shaders;
 
-})();
+})(ListObject);

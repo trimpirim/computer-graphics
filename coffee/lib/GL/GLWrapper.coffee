@@ -15,10 +15,8 @@ class GL
   constructor: () ->
     @gl = null
     @camera = null
-    #@canvas = document.getElementById 'canvas'
     GL.canvas = document.getElementById 'canvas'
     @shaders = new Shaders()
-    #@matrices = new Matrices()
     @objects = new Objects()
     @shaderProgram = null
     @initGL()
@@ -61,15 +59,12 @@ class GL
 
     @gl.useProgram @shaderProgram
 
-    @shaderProgram.vertexPositionAttribute = @gl.getAttribLocation @shaderProgram, 'aVertexPosition'
-    @gl.enableVertexAttribArray @shaderProgram.vertexPositionAttribute
+    @shaders.add 'GLPosition', @gl.getAttribLocation @shaderProgram, 'GLPosition'
+    @shaders.add 'GLColor', @gl.getAttribLocation @shaderProgram, 'GLColor'
 
-    @shaderProgram.vertexColorAttribute = @gl.getAttribLocation @shaderProgram, "aVertexColor"
-    @gl.enableVertexAttribArray @shaderProgram.vertexColorAttribute
-
-    @shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'uPMatrix'
-    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'uMVMatrix'
-    @shaderProgram.pointSize = @gl.getUniformLocation @shaderProgram, 'pointSize'
+    @shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
+    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLModelViewMatrix'
+    #@shaderProgram.pointSize = @gl.getUniformLocation @shaderProgram, 'pointSize'
 
   setMatricesUniforms: () ->
 
@@ -86,6 +81,7 @@ class GL
       item.buffers.addIndex 'indices', item.faces.toArray() if item.faces?
       item.compileBuffers()
       item.color.compileBuffers() if item.color?
+      item.normals.compildBuffers() if item.normals?
 
   drawScene: () ->
     @gl.viewport 0, 0, @gl.viewportWidth, @gl.viewportHeight
@@ -106,15 +102,11 @@ class GL
     @gl.uniform1f @shaderProgram.pointSize, 5.0
     
     @objects.loopOnlyShapes (item, index) =>
-      #item.ondraw() if item.ondraw?
       mat4.translate Matrices.getMatrix('modelViewMatrix'), item.coordinates if item.coordinates?
       Matrices.pushMatrix 'modelViewMatrix'
       mat4.multiply Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix
       @loadBuffers item
       @loadColor item.color if item.color?
-      #@ondraw()
-      #item.ondraw() if item.ondraw?
-      #@setMatricesUniforms()
 
       @setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
       @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')
@@ -125,17 +117,19 @@ class GL
   loadColor: (item) ->
     item.buffers.loopAll (buffer, key) =>
       @gl.bindBuffer buffer.target, buffer.buffer
-      @gl.vertexAttribPointer @shaderProgram.vertexColorAttribute, item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
+      @gl.enableVertexAttribArray @shaders.get 'GLColor'
+      @gl.vertexAttribPointer @shaders.get('GLColor'), item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
 
   loadBuffers: (item) ->
     item.buffers.loopAll (buffer, key) =>
       @gl.bindBuffer buffer.target, buffer.buffer
       if (buffer.target == @gl.ARRAY_BUFFER)
-        @gl.vertexAttribPointer @shaderProgram.vertexPositionAttribute, item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
+        @gl.enableVertexAttribArray @shaders.get 'GLPosition'
+        @gl.vertexAttribPointer @shaders.get('GLPosition'), item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
 
   loadObject: (item) ->
     @gl.bindBuffer @gl.ARRAY_BUFFER, item.buffer
-    @gl.vertexAttribPointer @shaderProgram.vertexPositionAttribute, item.columnsCount, @gl.FLOAT, false, 0, 0
+    @gl.vertexAttribPointer @shaders.get('GLPosition'), item.columnsCount, @gl.FLOAT, false, 0, 0
   
   startGL: () ->
     @initGL() if !@gl?
@@ -157,6 +151,7 @@ class GL
     @draggable.ondrag = (positions) =>
       @objects.loopOnlyShapes (item) ->
         item.ondrag positions if item.ondrag?
+      GL.camera.ondrag positions
 
   onkeydown: () ->
     GL.canvas.addEventListener 'keydown', (ev) =>
