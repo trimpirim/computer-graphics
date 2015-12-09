@@ -32,6 +32,7 @@ class SimpleObject
     @normals = null
     @modelMatrix = mat4.create()
     mat4.identity @modelMatrix
+    @texture = null
 
   getVertices: () ->
     @vertices

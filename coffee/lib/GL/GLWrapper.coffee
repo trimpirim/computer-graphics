@@ -2,6 +2,7 @@ class GL
   @gl: null
   @canvas: null
   @camera: null
+  @textures: null
   @getGL: ->
     @gl
 
@@ -12,12 +13,16 @@ class GL
     if !@camera?
       @camera = camera
 
+  @setTextures: (textures) ->
+    @textures = textures
+
   constructor: () ->
     @gl = null
     @camera = null
     GL.canvas = document.getElementById 'canvas'
     @shaders = new Shaders()
     @objects = new Objects()
+    @textures = null
     @shaderProgram = null
     @initGL()
 
@@ -30,6 +35,8 @@ class GL
       GL.canvas.height = xyOfScreen.y
       @gl.viewportWidth = xyOfScreen.x
       @gl.viewportHeight = xyOfScreen.y
+
+      @setTextures new Textures()
       
     catch e
       console.log "Error initializing GL: #{e}"
@@ -43,6 +50,10 @@ class GL
   setCamera: (camera) ->
     GL.setCamera camera
     @camera = camera if !@camera?
+
+  setTextures: (textures) ->
+    GL.setTextures textures
+    @textures = textures
 
   initShaders: () ->
     fShader = @shaders.getShader @gl, 'shader-fs'
@@ -59,17 +70,21 @@ class GL
 
     @gl.useProgram @shaderProgram
 
-    @shaders.add 'GLPosition', @gl.getAttribLocation @shaderProgram, 'GLPosition'
+    @shaders.add 'GLTextureCoord', @gl.getAttribLocation @shaderProgram, 'GLTextureCoord'
     @shaders.add 'GLColor', @gl.getAttribLocation @shaderProgram, 'GLColor'
+    @shaders.add 'GLPosition', @gl.getAttribLocation @shaderProgram, 'GLPosition'
 
-    @shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
+    @shaders.addUniform 'GLProjectionMatrix', @gl.getUniformLocation(@shaderProgram, 'GLProjectionMatrix')
+    @shaders.addUniform 'GLModelViewMatrix', @gl.getUniformLocation(@shaderProgram, 'GLModelViewMatrix')
+    @shaders.addUniform 'GLSampler', @gl.getUniformLocation(@shaderProgram, 'GLSampler')
+
+    ###@shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
     @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLModelViewMatrix'
+    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLSampler'###
     #@shaderProgram.pointSize = @gl.getUniformLocation @shaderProgram, 'pointSize'
 
-  setMatricesUniforms: () ->
-
-  setMatrixUniform: (shaderMatrixUniform, matrix) ->
-    @gl.uniformMatrix4fv shaderMatrixUniform, false, matrix
+  ###setMatrixUniform: (shaderMatrixUniform, matrix) ->
+    @gl.uniformMatrix4fv shaderMatrixUniform, false, matrix###
 
   addObject: (obj) ->
     @objects.add obj
@@ -78,10 +93,13 @@ class GL
     @objects.loopAll (item) =>
       item.buffers.addVertex 'vertices', item.vertices.toArray()
       item.color.buffers.addVertex 'vertices', item.color.vertices.toArray() if item.color?
+      item.normals.buffers.addVertex 'vertices', item.normals.vertices.toArray() if item.normals?
       item.buffers.addIndex 'indices', item.faces.toArray() if item.faces?
       item.compileBuffers()
       item.color.compileBuffers() if item.color?
-      item.normals.compildBuffers() if item.normals?
+      item.normals.compileBuffers() if item.normals?
+
+      item.texture.load() if item.texture?
 
   drawScene: () ->
     @gl.viewport 0, 0, @gl.viewportWidth, @gl.viewportHeight
@@ -105,17 +123,30 @@ class GL
       mat4.translate Matrices.getMatrix('modelViewMatrix'), item.coordinates if item.coordinates?
       Matrices.pushMatrix 'modelViewMatrix'
       mat4.multiply Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix
-      @loadBuffers item
       @loadColor item.color if item.color?
+      @loadNormals item.normals, item.texture if item.normals?
+      @loadBuffers item
 
-      @setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
-      @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')
+      @shaders.uniforms.uniformMatrices ['GLProjectionMatrix', 'GLModelViewMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix')]
+      ###@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
+      @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')###
 
       item.draw()
       Matrices.popMatrix 'modelViewMatrix'
 
+  loadNormals: (item, texture) ->
+    item.buffers.loopAll (buffer, key) =>
+      @textures.disableColor @shaders.get 'GLColor'
+      @gl.bindBuffer buffer.target, buffer.buffer
+      @gl.enableVertexAttribArray @shaders.get 'GLTextureCoord'
+      @gl.vertexAttribPointer @shaders.get('GLTextureCoord'), item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
+
+      @textures.bind texture
+      @gl.uniform1i @shaders.uniforms.get('GLSampler').location, 0
+
   loadColor: (item) ->
     item.buffers.loopAll (buffer, key) =>
+      @textures.bindWhiteAndDisable @shaders.get 'GLTextureCoord'
       @gl.bindBuffer buffer.target, buffer.buffer
       @gl.enableVertexAttribArray @shaders.get 'GLColor'
       @gl.vertexAttribPointer @shaders.get('GLColor'), item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
@@ -127,10 +158,6 @@ class GL
         @gl.enableVertexAttribArray @shaders.get 'GLPosition'
         @gl.vertexAttribPointer @shaders.get('GLPosition'), item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
 
-  loadObject: (item) ->
-    @gl.bindBuffer @gl.ARRAY_BUFFER, item.buffer
-    @gl.vertexAttribPointer @shaders.get('GLPosition'), item.columnsCount, @gl.FLOAT, false, 0, 0
-  
   startGL: () ->
     @initGL() if !@gl?
     @initShaders()
@@ -139,7 +166,7 @@ class GL
     @gl.enable @gl.DEPTH_TEST
     @runRenderLoop()
     @ondraw()
-    #drawScene()
+    #@drawScene()
 
   runRenderLoop: () =>
     requestAnimFrame @runRenderLoop

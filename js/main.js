@@ -1,5 +1,5 @@
 $(function() {
   var r;
-  r = new RunSecondTask();
+  r = new RunThirdTask();
   return r.run();
 });

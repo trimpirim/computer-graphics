@@ -21,7 +21,7 @@ FirstObject = (function(superClass) {
     vertices.fromArray(FirstObject.vertices);
     faces = new Vertices();
     faces.fromArray(FirstObject.faces);
-    object = new SecondTaskObject("first-object", vertices, GL.gl['TRIANGLES'], faces);
+    object = new ThirdTaskObject("first-object", vertices, GL.gl['TRIANGLES'], faces);
     object.initialTranslation(Axis.TYPES.X, -15, true);
     color = new Vertices();
     color.fromArray(FirstObject.colors);

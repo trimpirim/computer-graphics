@@ -1,6 +1,10 @@
 class Vertices
   constructor: () ->
     @coords = []
+    @columnsCount = 3
+
+  faceColumnsCount: ->
+    @columnsCount = 1
 
   fromArray: (coordinates, callback) ->
     for coordinate in coordinates
@@ -9,12 +13,25 @@ class Vertices
       vertex.fromArray coordinate
       @coords.push vertex
 
+    @columnsCount = 3
+
   fromColorArray: (coordinates) ->
     for coordinate in coordinates
       vertex = new Vertex4()
       vertex.fromArray coordinate
       #for i in [0..2]
       @coords.push vertex
+
+    @columnsCount = 4
+
+  fromNormalsArray: (coordinates) ->
+    for coordinate in coordinates
+      vertex = new Vertex2()
+      vertex.fromArray coordinate
+
+      @coords.push vertex
+
+    @columnsCount = 2
 
   toArray: () =>
     result = []
@@ -37,7 +54,7 @@ class Vertices
 
 
   getColumnsCount: () ->
-    return 3
+    return @columnsCount
 
   getRowsCount: () ->
     return @coords.length

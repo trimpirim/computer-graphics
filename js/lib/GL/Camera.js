@@ -38,10 +38,7 @@ Camera = (function() {
     return mat4.scale(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), [this.scale.x, this.scale.y, this.scale.z]);
   };
 
-  Camera.prototype.ondrag = function(positions) {
-    this.rotation.increase(Axis.TYPES.Y, positions.deltas.x / 5);
-    return this.rotation.increase(Axis.TYPES.X, positions.deltas.y / 5);
-  };
+  Camera.prototype.ondrag = function(positions) {};
 
   Camera.prototype.update = function(ev) {
     switch (ev.which) {

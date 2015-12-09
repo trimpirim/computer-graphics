@@ -1,5 +1,7 @@
 class Shaders extends ListObject
-  construct: () ->
+  constructor: ->
+    super()
+    @uniforms = new Uniforms()
 
   getShaderTypeAndContent: (id) ->
     shaderScript = document.getElementById id
@@ -40,5 +42,5 @@ class Shaders extends ListObject
 
     return shader
 
-
-
+  addUniform: (name, location) ->
+    @uniforms.add name, location

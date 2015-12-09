@@ -8,6 +8,8 @@ GL = (function() {
 
   GL.camera = null;
 
+  GL.textures = null;
+
   GL.getGL = function() {
     return this.gl;
   };
@@ -22,6 +24,10 @@ GL = (function() {
     }
   };
 
+  GL.setTextures = function(textures) {
+    return this.textures = textures;
+  };
+
   function GL() {
     this.runRenderLoop = bind(this.runRenderLoop, this);
     this.gl = null;
@@ -29,6 +35,7 @@ GL = (function() {
     GL.canvas = document.getElementById('canvas');
     this.shaders = new Shaders();
     this.objects = new Objects();
+    this.textures = null;
     this.shaderProgram = null;
     this.initGL();
   }
@@ -46,6 +53,7 @@ GL = (function() {
       GL.canvas.height = xyOfScreen.y;
       this.gl.viewportWidth = xyOfScreen.x;
       this.gl.viewportHeight = xyOfScreen.y;
+      this.setTextures(new Textures());
     } catch (error) {
       e = error;
       console.log("Error initializing GL: " + e);
@@ -67,6 +75,11 @@ GL = (function() {
     }
   };
 
+  GL.prototype.setTextures = function(textures) {
+    GL.setTextures(textures);
+    return this.textures = textures;
+  };
+
   GL.prototype.initShaders = function() {
     var fShader, vShader;
     fShader = this.shaders.getShader(this.gl, 'shader-fs');
@@ -79,17 +92,23 @@ GL = (function() {
       console.log('CAN NOT INITIALISE SHADERS');
     }
     this.gl.useProgram(this.shaderProgram);
-    this.shaders.add('GLPosition', this.gl.getAttribLocation(this.shaderProgram, 'GLPosition'));
+    this.shaders.add('GLTextureCoord', this.gl.getAttribLocation(this.shaderProgram, 'GLTextureCoord'));
     this.shaders.add('GLColor', this.gl.getAttribLocation(this.shaderProgram, 'GLColor'));
-    this.shaderProgram.pMatrixUniform = this.gl.getUniformLocation(this.shaderProgram, 'GLProjectionMatrix');
-    return this.shaderProgram.mvMatrixUniform = this.gl.getUniformLocation(this.shaderProgram, 'GLModelViewMatrix');
+    this.shaders.add('GLPosition', this.gl.getAttribLocation(this.shaderProgram, 'GLPosition'));
+    this.shaders.addUniform('GLProjectionMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLProjectionMatrix'));
+    this.shaders.addUniform('GLModelViewMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLModelViewMatrix'));
+    return this.shaders.addUniform('GLSampler', this.gl.getUniformLocation(this.shaderProgram, 'GLSampler'));
+
+    /*@shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
+    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLModelViewMatrix'
+    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLSampler'
+     */
   };
 
-  GL.prototype.setMatricesUniforms = function() {};
 
-  GL.prototype.setMatrixUniform = function(shaderMatrixUniform, matrix) {
-    return this.gl.uniformMatrix4fv(shaderMatrixUniform, false, matrix);
-  };
+  /*setMatrixUniform: (shaderMatrixUniform, matrix) ->
+    @gl.uniformMatrix4fv shaderMatrixUniform, false, matrix
+   */
 
   GL.prototype.addObject = function(obj) {
     return this.objects.add(obj);
@@ -102,6 +121,9 @@ GL = (function() {
         if (item.color != null) {
           item.color.buffers.addVertex('vertices', item.color.vertices.toArray());
         }
+        if (item.normals != null) {
+          item.normals.buffers.addVertex('vertices', item.normals.vertices.toArray());
+        }
         if (item.faces != null) {
           item.buffers.addIndex('indices', item.faces.toArray());
         }
@@ -110,7 +132,10 @@ GL = (function() {
           item.color.compileBuffers();
         }
         if (item.normals != null) {
-          return item.normals.compildBuffers();
+          item.normals.compileBuffers();
+        }
+        if (item.texture != null) {
+          return item.texture.load();
         }
       };
     })(this));
@@ -141,14 +166,33 @@ GL = (function() {
         }
         Matrices.pushMatrix('modelViewMatrix');
         mat4.multiply(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix);
-        _this.loadBuffers(item);
         if (item.color != null) {
           _this.loadColor(item.color);
         }
-        _this.setMatrixUniform(_this.shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix'));
-        _this.setMatrixUniform(_this.shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix'));
+        if (item.normals != null) {
+          _this.loadNormals(item.normals, item.texture);
+        }
+        _this.loadBuffers(item);
+        _this.shaders.uniforms.uniformMatrices(['GLProjectionMatrix', 'GLModelViewMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix')]);
+
+        /*@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
+        @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')
+         */
         item.draw();
         return Matrices.popMatrix('modelViewMatrix');
+      };
+    })(this));
+  };
+
+  GL.prototype.loadNormals = function(item, texture) {
+    return item.buffers.loopAll((function(_this) {
+      return function(buffer, key) {
+        _this.textures.disableColor(_this.shaders.get('GLColor'));
+        _this.gl.bindBuffer(buffer.target, buffer.buffer);
+        _this.gl.enableVertexAttribArray(_this.shaders.get('GLTextureCoord'));
+        _this.gl.vertexAttribPointer(_this.shaders.get('GLTextureCoord'), item.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
+        _this.textures.bind(texture);
+        return _this.gl.uniform1i(_this.shaders.uniforms.get('GLSampler').location, 0);
       };
     })(this));
   };
@@ -156,6 +200,7 @@ GL = (function() {
   GL.prototype.loadColor = function(item) {
     return item.buffers.loopAll((function(_this) {
       return function(buffer, key) {
+        _this.textures.bindWhiteAndDisable(_this.shaders.get('GLTextureCoord'));
         _this.gl.bindBuffer(buffer.target, buffer.buffer);
         _this.gl.enableVertexAttribArray(_this.shaders.get('GLColor'));
         return _this.gl.vertexAttribPointer(_this.shaders.get('GLColor'), item.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
@@ -173,11 +218,6 @@ GL = (function() {
         }
       };
     })(this));
-  };
-
-  GL.prototype.loadObject = function(item) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, item.buffer);
-    return this.gl.vertexAttribPointer(this.shaders.get('GLPosition'), item.columnsCount, this.gl.FLOAT, false, 0, 0);
   };
 
   GL.prototype.startGL = function() {

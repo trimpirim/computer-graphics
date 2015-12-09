@@ -6,10 +6,9 @@ Shaders = (function(superClass) {
   extend(Shaders, superClass);
 
   function Shaders() {
-    return Shaders.__super__.constructor.apply(this, arguments);
+    Shaders.__super__.constructor.call(this);
+    this.uniforms = new Uniforms();
   }
-
-  Shaders.prototype.construct = function() {};
 
   Shaders.prototype.getShaderTypeAndContent = function(id) {
     var result, shaderScript;
@@ -61,6 +60,10 @@ Shaders = (function(superClass) {
       return null;
     }
     return shader;
+  };
+
+  Shaders.prototype.addUniform = function(name, location) {
+    return this.uniforms.add(name, location);
   };
 
   return Shaders;

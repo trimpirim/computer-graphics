@@ -23,11 +23,13 @@
       uniform mat4 GLProjectionMatrixInverse;
       uniform mat4 GLModelViewProjectionMatrixInverse;
       uniform float GLPointSize;
+      uniform sampler2D GLSampler;
 
       varying vec4 color;
+      varying vec2 textureCoord;
 
       void main(void) {
-        gl_FragColor = color;
+        gl_FragColor = texture2D(GLSampler, textureCoord.st) * color;
       }
     </script>
     <script id="shader-vs" type="x-shader/x-vertex">
@@ -42,13 +44,16 @@
 
       attribute vec3 GLPosition;
       attribute vec4 GLColor;
+      attribute vec2 GLTextureCoord;
 
       varying vec4 color;
+      varying vec2 textureCoord;
 
       void main(void) {
         gl_PointSize = GLPointSize;
         gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0); 
         color = GLColor;
+        textureCoord = GLTextureCoord;
       }
     </script>
   </head>
@@ -300,19 +305,23 @@
     <script src="js/lib/GL/Color.js"></script>
     <script src="js/lib/GL/Objects.js"></script>
     <script src="js/lib/GL/Shaders.js"></script>
+    <script src="js/lib/GL/Textures.js"></script>
+    <script src="js/lib/GL/Texture.js"></script>
+    <script src="js/lib/GL/Uniforms.js"></script>
+    <script src="js/lib/GL/Uniform.js"></script>
 
     <script src="js/lib/GL/StateObject.js"></script>
 
-    <script src="js/second-task/SecondTaskObject.js"></script>
-    <script src="js/second-task/FirstObject.js"></script>
-    <script src="js/second-task/SecondObject.js"></script>
-    <script src="js/second-task/ThirdObject.js"></script>
-    <script src="js/second-task/ForthObject.js"></script>
-    <script src="js/second-task/FifthObject.js"></script>
-    <script src="js/second-task/SixthObject.js"></script>
-    <script src="js/second-task/SeventhObject.js"></script>
+    <script src="js/third-task/ThirdTaskObject.js"></script>
+    <script src="js/third-task/FirstObject.js"></script>
+    <script src="js/third-task/SecondObject.js"></script>
+    <script src="js/third-task/ThirdObject.js"></script>
+    <script src="js/third-task/ForthObject.js"></script>
+    <script src="js/third-task/FifthObject.js"></script>
+    <script src="js/third-task/SixthObject.js"></script>
+    <script src="js/third-task/SeventhObject.js"></script>
     <script src="js/Run.js"></script>
-    <script src="js/second-task/RunSecondTask.js"></script>
+    <script src="js/third-task/RunThirdTask.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

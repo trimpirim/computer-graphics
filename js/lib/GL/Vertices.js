@@ -5,11 +5,15 @@ Vertices = (function() {
   function Vertices() {
     this.toArray = bind(this.toArray, this);
     this.coords = [];
+    this.columnsCount = 3;
   }
 
+  Vertices.prototype.faceColumnsCount = function() {
+    return this.columnsCount = 1;
+  };
+
   Vertices.prototype.fromArray = function(coordinates, callback) {
-    var coordinate, i, len, results, vertex;
-    results = [];
+    var coordinate, i, len, vertex;
     for (i = 0, len = coordinates.length; i < len; i++) {
       coordinate = coordinates[i];
       if (callback != null) {
@@ -17,21 +21,31 @@ Vertices = (function() {
       }
       vertex = new Vertex();
       vertex.fromArray(coordinate);
-      results.push(this.coords.push(vertex));
+      this.coords.push(vertex);
     }
-    return results;
+    return this.columnsCount = 3;
   };
 
   Vertices.prototype.fromColorArray = function(coordinates) {
-    var coordinate, i, len, results, vertex;
-    results = [];
+    var coordinate, i, len, vertex;
     for (i = 0, len = coordinates.length; i < len; i++) {
       coordinate = coordinates[i];
       vertex = new Vertex4();
       vertex.fromArray(coordinate);
-      results.push(this.coords.push(vertex));
+      this.coords.push(vertex);
     }
-    return results;
+    return this.columnsCount = 4;
+  };
+
+  Vertices.prototype.fromNormalsArray = function(coordinates) {
+    var coordinate, i, len, vertex;
+    for (i = 0, len = coordinates.length; i < len; i++) {
+      coordinate = coordinates[i];
+      vertex = new Vertex2();
+      vertex.fromArray(coordinate);
+      this.coords.push(vertex);
+    }
+    return this.columnsCount = 2;
   };
 
   Vertices.prototype.toArray = function() {
@@ -64,7 +78,7 @@ Vertices = (function() {
   };
 
   Vertices.prototype.getColumnsCount = function() {
-    return 3;
+    return this.columnsCount;
   };
 
   Vertices.prototype.getRowsCount = function() {

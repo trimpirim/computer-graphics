@@ -46,6 +46,7 @@ SimpleObject = (function() {
     this.normals = null;
     this.modelMatrix = mat4.create();
     mat4.identity(this.modelMatrix);
+    this.texture = null;
   }
 
   SimpleObject.prototype.getVertices = function() {
