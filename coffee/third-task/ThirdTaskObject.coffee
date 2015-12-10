@@ -5,11 +5,11 @@ class ThirdTaskObject extends StateObject
 	onkeydown: (ev) ->
 		switch ev.which
 			when 16
-				# interval = setInterval =>
-				# 	clearInterval interval if @transformationDone
-				# 	@modelMatrix = @increaseMatrixBy @modelMatrix, 0.01
-				# , 50
-				@modelMatrix = @endMatrix
+				interval = setInterval =>
+					clearInterval interval if @transformationDone
+					@modelMatrix = @increaseMatrixBy @modelMatrix, 0.01
+				, 50
+				#@modelMatrix = @endMatrix
 
 	ondrag: (positions) ->
     @rotateY positions.deltas.x / 5, false

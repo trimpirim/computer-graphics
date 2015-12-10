@@ -16,9 +16,17 @@ ThirdTaskObject = (function(superClass) {
   }
 
   ThirdTaskObject.prototype.onkeydown = function(ev) {
+    var interval;
     switch (ev.which) {
       case 16:
-        return this.modelMatrix = this.endMatrix;
+        return interval = setInterval((function(_this) {
+          return function() {
+            if (_this.transformationDone) {
+              clearInterval(interval);
+            }
+            return _this.modelMatrix = _this.increaseMatrixBy(_this.modelMatrix, 0.01);
+          };
+        })(this), 50);
     }
   };
 
