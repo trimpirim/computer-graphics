@@ -154,9 +154,9 @@ class SeventhObject extends Shape
     faces.fromArray SeventhObject.faces
 
     object = new ThirdTaskObject "seventh-object", vertices, GL.gl['TRIANGLES'], faces
-    # object.initialTranslation Axis.TYPES.X, 15, true
-    object.initialTranslation Axis.TYPES.X, 0, true
-    object.initialTranslation Axis.TYPES.Z, 12, true
+    object.initialTranslation Axis.TYPES.X, 15, true
+    # object.initialTranslation Axis.TYPES.X, 0, true
+    # object.initialTranslation Axis.TYPES.Z, 12, true
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, -2, 1]
 
     normals = new Vertices()
