@@ -40,46 +40,50 @@ class SeventhObject extends Shape
     [1, 0, 0]#14 37
     [1, 1, -1]#22 38
     [1, 0, -1]#23 39
+    [0, 0, 1]#2 40
+    [1, 0, 1]#4 41
+    [1, -1, 1]#16 42
+    [0, -1, 1]#17 43
   ]
 
   @faces: [
-    [0, 1, 2]
-    [0, 2, 3]
-    [2, 3, 4]
-    [3, 4, 5]
+    # [0, 1, 2]
+    # [0, 2, 3]
+    # [2, 3, 4]#front
+    # [3, 4, 5]#front
     [0, 3, 8]
     [3, 8, 9]
-    [1, 2, 13]
-    [1, 13, 15]
-    [0, 8, 15]
-    [0, 1, 15]
-    [28, 29, 30]#right
-    [28, 30, 31]#right
+    # [1, 2, 13]
+    # [1, 13, 15]
+    # [0, 8, 15]
+    # [0, 1, 15]
+    # [28, 29, 30]#right
+    # [28, 30, 31]#right
     [3, 5, 9]
     [5, 9, 12]
-    [2, 4, 16]
-    [2, 16, 17]
-    [2, 13, 17]
-    [13, 17, 18]
-    [32, 33, 34]#right
-    [33, 34, 35]#right
-    [13, 14, 18]
-    [14, 18, 19]
-    [16, 17, 18]
-    [16, 18, 19]
-    [8, 13, 15]
-    [8, 9, 13]
+    # [40, 41, 42]#front
+    # [40, 42, 43]#front
+    # [2, 13, 17]
+    # [13, 17, 18]
+    # [32, 33, 34]#right
+    # [33, 34, 35]#right
+    # [13, 14, 18]
+    # [14, 18, 19]
+    # [16, 17, 18]
+    # [16, 18, 19]
+    # [8, 13, 15]
+    # [8, 9, 13]
 
-    [9, 13, 20]
-    [9, 20, 21]
+    # [9, 13, 20]
+    # [9, 20, 21]
     [9, 12, 21]
     [12, 21, 22]
-    [36, 37, 38]#right
-    [37, 38, 39]#right
-    [13, 14, 23]
-    [13, 20, 23]
-    [24, 25, 26] #back
-    [25, 26, 27] #back
+    # [36, 37, 38]#right
+    # [37, 38, 39]#right
+    # [13, 14, 23]
+    # [13, 20, 23]
+    # [24, 25, 26] #back
+    # [25, 26, 27] #back
   ]
 
 
@@ -98,10 +102,10 @@ class SeventhObject extends Shape
   @normals: [
     [-1, 1]#0
     [-1, 0]#1
-    [0, 0]#2
-    [0, 1]#3
-    [1, 0]#4
-    [1, 1]#5
+    [0.8, 0.2]#2
+    [0.8, 0.4]#3
+    [1, 0.2]#4
+    [1, 0.4]#5
     [0, 2]#6
     [1, 2]#7
     [-1, 1]#8
@@ -136,6 +140,10 @@ class SeventhObject extends Shape
     [0.8, 0.2]#37
     [1.0, 0.4]#38
     [1.0, 0.2]#39
+    [0.8, 0.2]#41
+    [1.0, 0.2]#43
+    [1.0, 0.0]#42
+    [0.8, 0.0]#40
   ]
 
   @generate: ->
@@ -146,9 +154,9 @@ class SeventhObject extends Shape
     faces.fromArray SeventhObject.faces
 
     object = new ThirdTaskObject "seventh-object", vertices, GL.gl['TRIANGLES'], faces
-    object.initialTranslation Axis.TYPES.X, 15, true
-    # object.initialTranslation Axis.TYPES.X, 0, true
-    # object.initialTranslation Axis.TYPES.Z, 12, true
+    # object.initialTranslation Axis.TYPES.X, 15, true
+    object.initialTranslation Axis.TYPES.X, 0, true
+    object.initialTranslation Axis.TYPES.Z, 12, true
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, -2, 1]
 
     normals = new Vertices()
