@@ -24,7 +24,7 @@ class Vertices
 
     @columnsCount = 4
 
-  fromNormalsArray: (coordinates) ->
+  fromTextureArray: (coordinates) ->
     for coordinate in coordinates
       vertex = new Vertex2()
       vertex.fromArray coordinate

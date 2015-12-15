@@ -27,6 +27,8 @@ ThirdTaskObject = (function(superClass) {
             return _this.modelMatrix = _this.increaseMatrixBy(_this.modelMatrix, 0.01);
           };
         })(this), 50);
+      case 83:
+        return this.texture.fromURL('images/third-task/bricks.png');
     }
   };
 

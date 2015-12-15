@@ -73,10 +73,12 @@ class GL
     @shaders.add 'GLTextureCoord', @gl.getAttribLocation @shaderProgram, 'GLTextureCoord'
     @shaders.add 'GLColor', @gl.getAttribLocation @shaderProgram, 'GLColor'
     @shaders.add 'GLPosition', @gl.getAttribLocation @shaderProgram, 'GLPosition'
+    @shaders.add 'GLNormal', @gl.getAttribLocation @shaderProgram, 'GLNormal'
 
     @shaders.addUniform 'GLProjectionMatrix', @gl.getUniformLocation(@shaderProgram, 'GLProjectionMatrix')
     @shaders.addUniform 'GLModelViewMatrix', @gl.getUniformLocation(@shaderProgram, 'GLModelViewMatrix')
     @shaders.addUniform 'GLSampler', @gl.getUniformLocation(@shaderProgram, 'GLSampler')
+    @shaders.addUniform 'GLNormalMatrix', @gl.getUniformLocation(@shaderProgram, 'GLNormalMatrix'), Uniform.TYPES.NORMALS
 
     ###@shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
     @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLModelViewMatrix'
@@ -91,13 +93,16 @@ class GL
 
   initObjects: () ->
     @objects.loopAll (item) =>
-      item.buffers.addVertex 'vertices', item.vertices.toArray()
+      ###item.buffers.addVertex 'vertices', item.vertices.toArray()
       item.color.buffers.addVertex 'vertices', item.color.vertices.toArray() if item.color?
       item.normals.buffers.addVertex 'vertices', item.normals.vertices.toArray() if item.normals?
-      item.buffers.addIndex 'indices', item.faces.toArray() if item.faces?
-      item.compileBuffers()
+      item.buffers.addIndex 'indices', item.faces.toArray() if item.faces?###
+      ###item.compileBuffers()
       item.color.compileBuffers() if item.color?
-      item.normals.compileBuffers() if item.normals?
+      item.normals.compileBuffers() if item.normals?###
+
+      item.addBuffers()
+      item.compileBuffers()
 
       item.texture.load() if item.texture?
 
@@ -124,22 +129,28 @@ class GL
       Matrices.pushMatrix 'modelViewMatrix'
       mat4.multiply Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix
       @loadColor item.color if item.color?
-      @loadNormals item.normals, item.texture if item.normals?
+      @loadTexture item.texture if item.texture?
       @loadBuffers item
 
-      @shaders.uniforms.uniformMatrices ['GLProjectionMatrix', 'GLModelViewMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix')]
+      @shaders.uniforms.uniformMatrices ['GLProjectionMatrix', 'GLModelViewMatrix', 'GLNormalMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix')]
       ###@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
       @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')###
 
       item.draw()
       Matrices.popMatrix 'modelViewMatrix'
 
-  loadNormals: (item, texture) ->
-    item.buffers.loopAll (buffer, key) =>
+  loadNormals: (normals) ->
+    normals.buffers.loopAll (buffer, key) ->
+      @gl.bindBuffer buffer.target, buffer.buffer
+      @gl.enableVertexAttribArray @shaders.get 'GLNormal'
+      @gl.vertexAttribPointer @shaders.get('GLNormal'), normals.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
+
+  loadTexture: (texture) ->
+    texture.buffers.loopAll (buffer, key) =>
       @textures.disableColor @shaders.get 'GLColor'
       @gl.bindBuffer buffer.target, buffer.buffer
       @gl.enableVertexAttribArray @shaders.get 'GLTextureCoord'
-      @gl.vertexAttribPointer @shaders.get('GLTextureCoord'), item.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
+      @gl.vertexAttribPointer @shaders.get('GLTextureCoord'), texture.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
 
       @textures.bind texture
       @gl.uniform1i @shaders.uniforms.get('GLSampler').location, 0
@@ -164,6 +175,7 @@ class GL
     @initObjects()
     @gl.clearColor 0.0, 0.0, 0.0, 1.0
     @gl.enable @gl.DEPTH_TEST
+    @gl.depthFunc @gl.LEQUAL
     @runRenderLoop()
     @ondraw()
     #@drawScene()

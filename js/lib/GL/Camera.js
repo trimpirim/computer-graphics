@@ -29,7 +29,7 @@ Camera = (function() {
   }
 
   Camera.prototype.draw = function() {
-    mat4.perspective(Matrices.getMatrix('projectionMatrix'), 45, GL.gl.viewportWidth / GL.gl.viewportHeight, 0.1, 1000.0);
+    mat4.perspective(Matrices.getMatrix('projectionMatrix'), 45, GL.gl.viewportWidth / GL.gl.viewportHeight, 0.1, 100.0);
     mat4.identity(Matrices.getMatrix('modelViewMatrix'));
     mat4.translate(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), this.translation.toArray());
     mat4.rotateY(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), MathUtils.toRadians(this.rotation.y));

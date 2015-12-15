@@ -15,6 +15,7 @@ RunThirdTask = (function(superClass) {
     var fifthObject, firstObject, forthObject, secondObject, seventhObject, sixthObject, thirdObject;
     this.initiateSliders();
     this.initiateDropdowns();
+    this.initiateTextureChoices();
     firstObject = FirstObject.generate();
     this.gl.addObject(firstObject);
     secondObject = SecondObject.generate();
@@ -209,6 +210,18 @@ RunThirdTask = (function(superClass) {
       })(this),
       max: 180
     });
+  };
+
+  RunThirdTask.prototype.initiateTextureChoices = function() {
+    return $('.texture-choice input[type="radio"]').on('click', (function(_this) {
+      return function(ev) {
+        var url;
+        url = ev.currentTarget.value;
+        return _this.gl.loopOnlyShapes(function(object) {
+          return object.texture.fromURL(url);
+        });
+      };
+    })(this));
   };
 
   RunThirdTask.prototype.initiateSlider = function(name, element, valueElement, options) {

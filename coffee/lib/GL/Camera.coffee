@@ -5,7 +5,7 @@ class Camera
 		@scale = new ScaleState scale.x, scale.y, scale.z
 
 	draw: ->
-		mat4.perspective Matrices.getMatrix('projectionMatrix'), 45, GL.gl.viewportWidth / GL.gl.viewportHeight, 0.1, 1000.0
+		mat4.perspective Matrices.getMatrix('projectionMatrix'), 45, GL.gl.viewportWidth / GL.gl.viewportHeight, 0.1, 100.0
 		mat4.identity Matrices.getMatrix('modelViewMatrix')
 		mat4.translate Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), @translation.toArray()
 		mat4.rotateY Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), MathUtils.toRadians(@rotation.y)

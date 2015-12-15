@@ -5,6 +5,8 @@ Matrices = (function() {
 
   Matrices.modelViewMatrix = mat4.create();
 
+  Matrices.normalMatrix = null;
+
   Matrices.stacks = {
     'modelViewMatrix': [],
     'projectionMatrix': []

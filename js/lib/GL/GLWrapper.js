@@ -95,9 +95,11 @@ GL = (function() {
     this.shaders.add('GLTextureCoord', this.gl.getAttribLocation(this.shaderProgram, 'GLTextureCoord'));
     this.shaders.add('GLColor', this.gl.getAttribLocation(this.shaderProgram, 'GLColor'));
     this.shaders.add('GLPosition', this.gl.getAttribLocation(this.shaderProgram, 'GLPosition'));
+    this.shaders.add('GLNormal', this.gl.getAttribLocation(this.shaderProgram, 'GLNormal'));
     this.shaders.addUniform('GLProjectionMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLProjectionMatrix'));
     this.shaders.addUniform('GLModelViewMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLModelViewMatrix'));
-    return this.shaders.addUniform('GLSampler', this.gl.getUniformLocation(this.shaderProgram, 'GLSampler'));
+    this.shaders.addUniform('GLSampler', this.gl.getUniformLocation(this.shaderProgram, 'GLSampler'));
+    return this.shaders.addUniform('GLNormalMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLNormalMatrix'), Uniform.TYPES.NORMALS);
 
     /*@shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
     @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLModelViewMatrix'
@@ -117,23 +119,19 @@ GL = (function() {
   GL.prototype.initObjects = function() {
     return this.objects.loopAll((function(_this) {
       return function(item) {
-        item.buffers.addVertex('vertices', item.vertices.toArray());
-        if (item.color != null) {
-          item.color.buffers.addVertex('vertices', item.color.vertices.toArray());
-        }
-        if (item.normals != null) {
-          item.normals.buffers.addVertex('vertices', item.normals.vertices.toArray());
-        }
-        if (item.faces != null) {
-          item.buffers.addIndex('indices', item.faces.toArray());
-        }
+
+        /*item.buffers.addVertex 'vertices', item.vertices.toArray()
+        item.color.buffers.addVertex 'vertices', item.color.vertices.toArray() if item.color?
+        item.normals.buffers.addVertex 'vertices', item.normals.vertices.toArray() if item.normals?
+        item.buffers.addIndex 'indices', item.faces.toArray() if item.faces?
+         */
+
+        /*item.compileBuffers()
+        item.color.compileBuffers() if item.color?
+        item.normals.compileBuffers() if item.normals?
+         */
+        item.addBuffers();
         item.compileBuffers();
-        if (item.color != null) {
-          item.color.compileBuffers();
-        }
-        if (item.normals != null) {
-          item.normals.compileBuffers();
-        }
         if (item.texture != null) {
           return item.texture.load();
         }
@@ -169,11 +167,11 @@ GL = (function() {
         if (item.color != null) {
           _this.loadColor(item.color);
         }
-        if (item.normals != null) {
-          _this.loadNormals(item.normals, item.texture);
+        if (item.texture != null) {
+          _this.loadTexture(item.texture);
         }
         _this.loadBuffers(item);
-        _this.shaders.uniforms.uniformMatrices(['GLProjectionMatrix', 'GLModelViewMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix')]);
+        _this.shaders.uniforms.uniformMatrices(['GLProjectionMatrix', 'GLModelViewMatrix', 'GLNormalMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix')]);
 
         /*@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
         @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')
@@ -184,13 +182,21 @@ GL = (function() {
     })(this));
   };
 
-  GL.prototype.loadNormals = function(item, texture) {
-    return item.buffers.loopAll((function(_this) {
+  GL.prototype.loadNormals = function(normals) {
+    return normals.buffers.loopAll(function(buffer, key) {
+      this.gl.bindBuffer(buffer.target, buffer.buffer);
+      this.gl.enableVertexAttribArray(this.shaders.get('GLNormal'));
+      return this.gl.vertexAttribPointer(this.shaders.get('GLNormal'), normals.vertices.getColumnsCount(), this.gl.FLOAT, false, 0, 0);
+    });
+  };
+
+  GL.prototype.loadTexture = function(texture) {
+    return texture.buffers.loopAll((function(_this) {
       return function(buffer, key) {
         _this.textures.disableColor(_this.shaders.get('GLColor'));
         _this.gl.bindBuffer(buffer.target, buffer.buffer);
         _this.gl.enableVertexAttribArray(_this.shaders.get('GLTextureCoord'));
-        _this.gl.vertexAttribPointer(_this.shaders.get('GLTextureCoord'), item.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
+        _this.gl.vertexAttribPointer(_this.shaders.get('GLTextureCoord'), texture.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
         _this.textures.bind(texture);
         return _this.gl.uniform1i(_this.shaders.uniforms.get('GLSampler').location, 0);
       };
@@ -228,6 +234,7 @@ GL = (function() {
     this.initObjects();
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
+    this.gl.depthFunc(this.gl.LEQUAL);
     this.runRenderLoop();
     return this.ondraw();
   };

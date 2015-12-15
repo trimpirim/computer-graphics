@@ -36,7 +36,7 @@ SimpleObject = (function() {
 
   function SimpleObject(name1, vertices1, mode1, faces1, coordinates, index) {
     this.name = name1;
-    this.vertices = vertices1;
+    this.vertices = vertices1 != null ? vertices1 : new Vertices();
     this.mode = mode1;
     this.faces = faces1;
     this.coordinates = coordinates;
@@ -61,8 +61,33 @@ SimpleObject = (function() {
     return this.buffers.add(name, buffer);
   };
 
+  SimpleObject.prototype.addBuffers = function() {
+    this.buffers.addVertex('vertices', this.vertices.toArray());
+    if (this.color != null) {
+      this.color.buffers.addVertex('vertices', this.color.vertices.toArray());
+    }
+    if (this.normals != null) {
+      this.normals.buffers.addVertex('vertices', this.normals.vertices.toArray());
+    }
+    if (this.texture != null) {
+      this.texture.buffers.addVertex('vertices', this.texture.vertices.toArray());
+    }
+    if (this.faces != null) {
+      return this.buffers.addIndex('indices', this.faces.toArray());
+    }
+  };
+
   SimpleObject.prototype.compileBuffers = function() {
-    return this.buffers.compile();
+    this.buffers.compile();
+    if (this.color != null) {
+      this.color.compileBuffers();
+    }
+    if (this.normals != null) {
+      this.normals.compileBuffers();
+    }
+    if (this.texture != null) {
+      return this.texture.compileBuffers();
+    }
   };
 
   SimpleObject.prototype.draw = function() {
@@ -126,6 +151,34 @@ SimpleObject = (function() {
         return callback(savedInterval);
       }
     }, interval);
+  };
+
+  SimpleObject.prototype.computeNormals = function() {
+    var a, b, c, f, k, key, l, len, len1, len2, m, normal, normals, ref, ref1, ref2, vertice;
+    this.normals = new SimpleObject('normals');
+    normals = [];
+    ref = this.vertices.coords;
+    for (key = k = 0, len = ref.length; k < len; key = ++k) {
+      vertice = ref[key];
+      normals[key] = new Vector();
+    }
+    ref1 = this.faces.coords;
+    for (key = l = 0, len1 = ref1.length; l < len1; key = ++l) {
+      f = ref1[key];
+      a = Vector.fromArray(this.vertices.coords[f.x].toArray());
+      b = Vector.fromArray(this.vertices.coords[f.y].toArray());
+      c = Vector.fromArray(this.vertices.coords[f.z].toArray());
+      normal = b.subtract(a).cross(c.subtract(a)).unit();
+      normals[f.x] = normals[f.x].add(normal);
+      normals[f.y] = normals[f.y].add(normal);
+      normals[f.z] = normals[f.z].add(normal);
+    }
+    ref2 = this.vertices.coords;
+    for (key = m = 0, len2 = ref2.length; m < len2; key = ++m) {
+      vertice = ref2[key];
+      normals[key] = normals[key].unit().toArray();
+    }
+    return this.normals.vertices.fromArray(normals);
   };
 
   return SimpleObject;

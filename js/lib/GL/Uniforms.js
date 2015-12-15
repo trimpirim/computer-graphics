@@ -9,8 +9,8 @@ Uniforms = (function(superClass) {
     Uniforms.__super__.constructor.call(this);
   }
 
-  Uniforms.prototype.add = function(name, location) {
-    return this.addObject(name, new Uniform(name, location));
+  Uniforms.prototype.add = function(name, location, type) {
+    return this.addObject(name, new Uniform(name, location, type));
   };
 
   Uniforms.prototype.uniformMatrices = function(names, matrices) {
@@ -19,7 +19,7 @@ Uniforms = (function(superClass) {
     for (key = i = 0, len = names.length; i < len; key = ++i) {
       name = names[key];
       uniform = this.get(name);
-      results.push(uniform.uniformMatrix(matrices[key]));
+      results.push(uniform.uniformMatrixByType(matrices[key]));
     }
     return results;
   };

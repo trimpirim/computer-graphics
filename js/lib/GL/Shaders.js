@@ -62,8 +62,8 @@ Shaders = (function(superClass) {
     return shader;
   };
 
-  Shaders.prototype.addUniform = function(name, location) {
-    return this.uniforms.add(name, location);
+  Shaders.prototype.addUniform = function(name, location, type) {
+    return this.uniforms.add(name, location, type);
   };
 
   return Shaders;

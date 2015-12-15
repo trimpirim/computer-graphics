@@ -10,6 +10,8 @@ class ThirdTaskObject extends StateObject
 					@modelMatrix = @increaseMatrixBy @modelMatrix, 0.01
 				, 50
 				#@modelMatrix = @endMatrix
+			when 83
+				@texture.fromURL 'images/third-task/bricks.png'
 
 	ondrag: (positions) ->
     @rotateY positions.deltas.x / 5, false

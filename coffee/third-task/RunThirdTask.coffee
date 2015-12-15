@@ -9,6 +9,7 @@ class RunThirdTask extends Run
 
     @initiateSliders()
     @initiateDropdowns()
+    @initiateTextureChoices()
 
     firstObject = FirstObject.generate()
     @gl.addObject firstObject
@@ -167,6 +168,12 @@ class RunThirdTask extends Run
           object.rotateZ original + ui.value, true
       max: 180
     }
+
+  initiateTextureChoices: ->
+    $('.texture-choice input[type="radio"]').on 'click', (ev) =>
+      url = ev.currentTarget.value
+      @gl.loopOnlyShapes (object) =>
+        object.texture.fromURL url
 
   initiateSlider: (name, element, valueElement, options = {}) ->
     slide = options.slide.clone() if options.slide?

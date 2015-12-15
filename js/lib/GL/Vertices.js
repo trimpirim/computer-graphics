@@ -37,7 +37,7 @@ Vertices = (function() {
     return this.columnsCount = 4;
   };
 
-  Vertices.prototype.fromNormalsArray = function(coordinates) {
+  Vertices.prototype.fromTextureArray = function(coordinates) {
     var coordinate, i, len, vertex;
     for (i = 0, len = coordinates.length; i < len; i++) {
       coordinate = coordinates[i];

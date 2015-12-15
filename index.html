@@ -15,7 +15,7 @@
     <script id="shader-fs" type="x-shader/x-fragment">
       precision highp float;
 
-      uniform mat3 GLNormalMatrix;
+      uniform mat4 GLNormalMatrix;
       uniform mat4 GLModelViewMatrix;
       uniform mat4 GLProjectionMatrix;
       uniform mat4 GLModelViewProjectionMatrix;
@@ -27,13 +27,16 @@
 
       varying vec4 color;
       varying vec2 textureCoord;
+      varying vec3 lighting;
 
       void main(void) {
-        gl_FragColor = texture2D(GLSampler, textureCoord.st) * color;
+        vec4 textureColor = texture2D(GLSampler, textureCoord) * color;
+        // gl_FragColor = textureColor;
+        gl_FragColor = vec4(textureColor.rgb * lighting, textureColor.a);
       }
     </script>
     <script id="shader-vs" type="x-shader/x-vertex">
-      uniform mat3 GLNormalMatrix;
+      uniform mat4 GLNormalMatrix;
       uniform mat4 GLModelViewMatrix;
       uniform mat4 GLProjectionMatrix;
       uniform mat4 GLModelViewProjectionMatrix;
@@ -45,15 +48,26 @@
       attribute vec3 GLPosition;
       attribute vec4 GLColor;
       attribute vec2 GLTextureCoord;
+      attribute vec3 GLNormal;
 
       varying vec4 color;
       varying vec2 textureCoord;
+      varying vec3 lighting;
 
       void main(void) {
         gl_PointSize = GLPointSize;
         gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0); 
         color = GLColor;
         textureCoord = GLTextureCoord;
+
+        vec3 ambientColor = vec3(0.6, 0.6, 0.6);
+        vec3 directionalColor = vec3(0.8, 0.8, 0.8);
+        vec3 lightingDirection = vec3(-0.25, -0.25, -1);
+
+        vec4 transformedNormal = GLNormalMatrix * vec4(GLNormal, 1.0);
+         
+        float directionalLighting = max(dot(transformedNormal.xyz, lightingDirection), 0.0);
+        lighting = ambientColor + (directionalColor * directionalLighting);
       }
     </script>
   </head>
@@ -244,44 +258,30 @@
             </li>
           </ul>
         </li>
-        <!--<li class="drop-down-model">
+        <li class="drop-down-model">
           <span>
-            scale
+            textures
           </span>
-          <ul class="inner">
-            <li class="scale-x row">
-              <span class="direction">
-                x
-              </span>
-              <div id="slider">
-              </div>
-              <span class="number">
-              </span>
+          <ul class="inner texture-choice">
+            <li class="bricks row">
+              <input type="radio" name="texture" value="images/third-task/bricks.png" id="bricks">
+              <label for="bricks">
+                bricks
+              </label>
             </li>
-            <li class="scale-y row">
-              <span class="direction">
-                y
-              </span>
-              <div id="slider">
-              </div>
-              <span class="number">
-              </span>
-            </li>
-            <li class="scale-z row">
-              <span class="direction">
-                z
-              </span>
-              <div id="slider">
-              </div>
-              <span class="number">
-              </span>
+            <li class="fibonacci row">
+              <input type="radio" name="texture" value="images/third-task/fibonacci.jpg" id="fibonacci">
+              <label for="fibonacci">
+                fibonacci
+              </label>
             </li>
           </ul>
-        </li>-->
+        </li>
       </ul>
     </div>
 
     <script src="js/core.js"></script>
+    <script src="js/lib/GL/Vector.js"></script>
     <script src="js/lib/GL/ListObject.js"></script>
     <script src="js/lib/GL/Draggable.js"></script>
     <script src="js/lib/GL/Utils.js"></script>

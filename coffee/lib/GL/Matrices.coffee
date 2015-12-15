@@ -1,6 +1,7 @@
 class Matrices 
   @projectionMatrix: mat4.create()
   @modelViewMatrix: mat4.create()
+  @normalMatrix: null
   @stacks: 
     'modelViewMatrix': []
     'projectionMatrix': []

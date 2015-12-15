@@ -42,5 +42,5 @@ class Shaders extends ListObject
 
     return shader
 
-  addUniform: (name, location) ->
-    @uniforms.add name, location
+  addUniform: (name, location, type) ->
+    @uniforms.add name, location, type

@@ -26,7 +26,7 @@ class SimpleObject
     obj
 
 
-  constructor: (@name, @vertices, @mode, @faces, @coordinates, @index) ->
+  constructor: (@name, @vertices = new Vertices(), @mode, @faces, @coordinates, @index) ->
     @buffers = new Buffers()
     @color = null
     @normals = null
@@ -43,8 +43,18 @@ class SimpleObject
   addBuffer: (name, buffer) ->
     @buffers.add name, buffer
 
+  addBuffers: ->
+    @buffers.addVertex 'vertices', @vertices.toArray()
+    @color.buffers.addVertex 'vertices', @color.vertices.toArray() if @color?
+    @normals.buffers.addVertex 'vertices', @normals.vertices.toArray() if @normals?
+    @texture.buffers.addVertex 'vertices', @texture.vertices.toArray() if @texture?
+    @buffers.addIndex 'indices', @faces.toArray() if @faces?
+
   compileBuffers: () ->
     @buffers.compile()
+    @color.compileBuffers() if @color?
+    @normals.compileBuffers() if @normals?
+    @texture.compileBuffers() if @texture?
 
   draw: () ->
     if @buffers.indexExist
@@ -94,4 +104,23 @@ class SimpleObject
       callback(savedInterval) if callback?
     , interval
 
+  computeNormals: ->
+    @normals = new SimpleObject 'normals'
+    normals = []
+    for vertice, key in @vertices.coords
+      normals[key] = new Vector()
 
+    for f, key in @faces.coords
+      a = Vector.fromArray @vertices.coords[f.x].toArray()
+      b = Vector.fromArray @vertices.coords[f.y].toArray()
+      c = Vector.fromArray @vertices.coords[f.z].toArray()
+      normal = b.subtract(a).cross(c.subtract(a)).unit()
+      normals[f.x] = normals[f.x].add(normal)
+      normals[f.y] = normals[f.y].add(normal)
+      normals[f.z] = normals[f.z].add(normal)
+
+    for vertice, key in @vertices.coords
+      normals[key] = normals[key].unit().toArray()
+      # normals[key] = normals[key].unit().toArray()
+
+    @normals.vertices.fromArray normals
