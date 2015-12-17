@@ -156,7 +156,6 @@ GL = (function() {
   };
 
   GL.prototype.loadObjects = function() {
-    this.gl.uniform1f(this.shaderProgram.pointSize, 5.0);
     return this.objects.loopOnlyShapes((function(_this) {
       return function(item, index) {
         Matrices.pushMatrix('modelViewMatrix');
@@ -167,6 +166,9 @@ GL = (function() {
         if (item.texture != null) {
           _this.loadTexture(item.texture);
         }
+        if (item.normals != null) {
+          _this.loadNormals(item.normals);
+        }
         _this.loadBuffers(item);
         _this.shaders.uniforms.uniformMatrices(['GLProjectionMatrix', 'GLModelViewMatrix', 'GLNormalMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix')]);
         item.draw();
@@ -176,11 +178,13 @@ GL = (function() {
   };
 
   GL.prototype.loadNormals = function(normals) {
-    return normals.buffers.loopAll(function(buffer, key) {
-      this.gl.bindBuffer(buffer.target, buffer.buffer);
-      this.gl.enableVertexAttribArray(this.shaders.get('GLNormal'));
-      return this.gl.vertexAttribPointer(this.shaders.get('GLNormal'), normals.vertices.getColumnsCount(), this.gl.FLOAT, false, 0, 0);
-    });
+    return normals.buffers.loopAll((function(_this) {
+      return function(buffer, key) {
+        _this.gl.bindBuffer(buffer.target, buffer.buffer);
+        _this.gl.enableVertexAttribArray(_this.shaders.get('GLNormal'));
+        return _this.gl.vertexAttribPointer(_this.shaders.get('GLNormal'), normals.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
+      };
+    })(this));
   };
 
   GL.prototype.loadTexture = function(texture) {

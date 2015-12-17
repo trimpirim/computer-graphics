@@ -122,13 +122,14 @@ class GL
       callback item if callback?
 
   loadObjects: () ->
-    @gl.uniform1f @shaderProgram.pointSize, 5.0
+    # @gl.uniform1f @shaderProgram.pointSize, 5.0
     
     @objects.loopOnlyShapes (item, index) =>
       Matrices.pushMatrix 'modelViewMatrix'
       mat4.multiply Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix
       @loadColor item.color if item.color?
       @loadTexture item.texture if item.texture?
+      @loadNormals item.normals if item.normals?
       @loadBuffers item
 
       @shaders.uniforms.uniformMatrices ['GLProjectionMatrix', 'GLModelViewMatrix', 'GLNormalMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix')]
@@ -137,7 +138,7 @@ class GL
       Matrices.popMatrix 'modelViewMatrix'
 
   loadNormals: (normals) ->
-    normals.buffers.loopAll (buffer, key) ->
+    normals.buffers.loopAll (buffer, key) =>
       @gl.bindBuffer buffer.target, buffer.buffer
       @gl.enableVertexAttribArray @shaders.get 'GLNormal'
       @gl.vertexAttribPointer @shaders.get('GLNormal'), normals.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
@@ -175,7 +176,7 @@ class GL
     @gl.depthFunc @gl.LEQUAL
     @runRenderLoop()
     @ondraw()
-    #@drawScene()
+    # @drawScene()
 
   runRenderLoop: () =>
     requestAnimFrame @runRenderLoop

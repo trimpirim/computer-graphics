@@ -32,7 +32,7 @@
       void main(void) {
         vec4 textureColor = texture2D(GLSampler, textureCoord) * color;
         // gl_FragColor = textureColor;
-        gl_FragColor = vec4(textureColor.rgb * lighting, textureColor.a);
+        gl_FragColor = textureColor;
       }
     </script>
     <script id="shader-vs" type="x-shader/x-vertex">
@@ -52,22 +52,33 @@
 
       varying vec4 color;
       varying vec2 textureCoord;
-      varying vec3 lighting;
+
+      const vec3 lightPos = vec3(1.0, 1.0, 1.0);
+      const vec3 diffuseColor = vec3(0.5, 0.0, 0.0);
+      const vec3 specColor = vec3(1.0, 1.0, 1.0);
 
       void main(void) {
-        gl_PointSize = GLPointSize;
         gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0); 
+        gl_PointSize = GLPointSize;
         color = GLColor;
         textureCoord = GLTextureCoord;
 
-        vec3 ambientColor = vec3(0.2, 0.2, 0.2);
-        vec3 directionalColor = vec3(0.25, 0.25, 0.25);
-        vec3 lightingDirection = vec3(0.5, 1, 1);
+        vec3 normal = vec3(GLNormalMatrix * GLNormal);
+        vec4 vertPos4 = GLModelViewMatrix * vec4(GLPosition, 1.0);
+        vec3 vertPos = vec3(vertPos4) / vertPos4.w;
+        vec3 lightDir = normalize(lightPos - vertPos);
+        vec3 reflectDir = reflect(-lightDir, normal);
+        vec3 viewDir = normalize(-vertPos);
 
-        vec3 transformedNormal = GLNormalMatrix * GLNormal;
-         
-        float directionalLighting = max(dot(transformedNormal.xyz, lightingDirection), 0.0);
-        lighting = ambientColor + (directionalColor * directionalLighting);
+        float lambertian = max(dot(lightDir,normal), 0.0);
+        float specular = 0.0;
+        
+        if(lambertian > 0.0) {
+          float specAngle = max(dot(reflectDir, viewDir), 0.0);
+          specular = pow(specAngle, 4.0);
+        }
+        
+        color = vec4(lambertian * diffuseColor + specular * specColor, 1.0);
       }
     </script>
   </head>
