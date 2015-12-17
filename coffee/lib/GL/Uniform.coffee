@@ -18,7 +18,6 @@ class Uniform
 	  GL.gl.uniformMatrix4fv @location, false, matrix
 
   uniformNormalMatrix: (matrix) ->
-  	normal = mat4.create()
-  	normal = mat4.invert normal, matrix
-  	normal = mat4.transpose normal, normal
-  	GL.gl.uniformMatrix4fv @location, false, normal
+  	normal = mat3.create()
+  	normal = mat3.normalFromMat4 normal, matrix
+  	GL.gl.uniformMatrix3fv @location, false, normal

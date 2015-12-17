@@ -13,7 +13,7 @@ Camera = (function() {
       translation = {
         x: 0,
         y: 0,
-        z: -15
+        z: -5
       };
     }
     if (scale == null) {

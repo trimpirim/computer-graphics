@@ -15,7 +15,7 @@
     <script id="shader-fs" type="x-shader/x-fragment">
       precision highp float;
 
-      uniform mat4 GLNormalMatrix;
+      uniform mat3 GLNormalMatrix;
       uniform mat4 GLModelViewMatrix;
       uniform mat4 GLProjectionMatrix;
       uniform mat4 GLModelViewProjectionMatrix;
@@ -36,7 +36,7 @@
       }
     </script>
     <script id="shader-vs" type="x-shader/x-vertex">
-      uniform mat4 GLNormalMatrix;
+      uniform mat3 GLNormalMatrix;
       uniform mat4 GLModelViewMatrix;
       uniform mat4 GLProjectionMatrix;
       uniform mat4 GLModelViewProjectionMatrix;
@@ -60,11 +60,11 @@
         color = GLColor;
         textureCoord = GLTextureCoord;
 
-        vec3 ambientColor = vec3(0.6, 0.6, 0.6);
-        vec3 directionalColor = vec3(0.8, 0.8, 0.8);
-        vec3 lightingDirection = vec3(-0.25, -0.25, -1);
+        vec3 ambientColor = vec3(0.2, 0.2, 0.2);
+        vec3 directionalColor = vec3(0.25, 0.25, 0.25);
+        vec3 lightingDirection = vec3(0.5, 1, 1);
 
-        vec4 transformedNormal = GLNormalMatrix * vec4(GLNormal, 1.0);
+        vec3 transformedNormal = GLNormalMatrix * GLNormal;
          
         float directionalLighting = max(dot(transformedNormal.xyz, lightingDirection), 0.0);
         lighting = ambientColor + (directionalColor * directionalLighting);
@@ -320,6 +320,7 @@
     <script src="js/third-task/FifthObject.js"></script>
     <script src="js/third-task/SixthObject.js"></script>
     <script src="js/third-task/SeventhObject.js"></script>
+    <script src="js/third-task/CubeObject.js"></script>
     <script src="js/Run.js"></script>
     <script src="js/third-task/RunThirdTask.js"></script>
     <script src="js/main.js"></script>

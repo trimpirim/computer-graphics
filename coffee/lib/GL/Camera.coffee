@@ -1,5 +1,5 @@
 class Camera
-	constructor: (rotation = {x: 0, y: 0, z: 0}, translation = {x: 0, y: 0, z: -15}, scale = {x: 1, y: 1, z: 1}) ->
+	constructor: (rotation = {x: 0, y: 0, z: 0}, translation = {x: 0, y: 0, z: -5}, scale = {x: 1, y: 1, z: 1}) ->
 		@translation = new TranslationState translation.x, translation.y, translation.z
 		@rotation = new RotationState rotation.x, rotation.y, rotation.z  
 		@scale = new ScaleState scale.x, scale.y, scale.z

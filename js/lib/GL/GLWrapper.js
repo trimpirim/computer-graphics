@@ -159,9 +159,6 @@ GL = (function() {
     this.gl.uniform1f(this.shaderProgram.pointSize, 5.0);
     return this.objects.loopOnlyShapes((function(_this) {
       return function(item, index) {
-        if (item.coordinates != null) {
-          mat4.translate(Matrices.getMatrix('modelViewMatrix'), item.coordinates);
-        }
         Matrices.pushMatrix('modelViewMatrix');
         mat4.multiply(Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix);
         if (item.color != null) {
@@ -172,10 +169,6 @@ GL = (function() {
         }
         _this.loadBuffers(item);
         _this.shaders.uniforms.uniformMatrices(['GLProjectionMatrix', 'GLModelViewMatrix', 'GLNormalMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix')]);
-
-        /*@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
-        @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')
-         */
         item.draw();
         return Matrices.popMatrix('modelViewMatrix');
       };

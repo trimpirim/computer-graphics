@@ -29,10 +29,9 @@ Uniform = (function() {
 
   Uniform.prototype.uniformNormalMatrix = function(matrix) {
     var normal;
-    normal = mat4.create();
-    normal = mat4.invert(normal, matrix);
-    normal = mat4.transpose(normal, normal);
-    return GL.gl.uniformMatrix4fv(this.location, false, normal);
+    normal = mat3.create();
+    normal = mat3.normalFromMat4(normal, matrix);
+    return GL.gl.uniformMatrix3fv(this.location, false, normal);
   };
 
   return Uniform;

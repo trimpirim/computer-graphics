@@ -125,7 +125,6 @@ class GL
     @gl.uniform1f @shaderProgram.pointSize, 5.0
     
     @objects.loopOnlyShapes (item, index) =>
-      mat4.translate Matrices.getMatrix('modelViewMatrix'), item.coordinates if item.coordinates?
       Matrices.pushMatrix 'modelViewMatrix'
       mat4.multiply Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix'), item.modelMatrix
       @loadColor item.color if item.color?
@@ -133,8 +132,6 @@ class GL
       @loadBuffers item
 
       @shaders.uniforms.uniformMatrices ['GLProjectionMatrix', 'GLModelViewMatrix', 'GLNormalMatrix'], [Matrices.getMatrix('projectionMatrix'), Matrices.getMatrix('modelViewMatrix'), Matrices.getMatrix('modelViewMatrix')]
-      ###@setMatrixUniform @shaderProgram.pMatrixUniform, Matrices.getMatrix('projectionMatrix')
-      @setMatrixUniform @shaderProgram.mvMatrixUniform, Matrices.getMatrix('modelViewMatrix')###
 
       item.draw()
       Matrices.popMatrix 'modelViewMatrix'

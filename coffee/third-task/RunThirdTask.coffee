@@ -11,6 +11,9 @@ class RunThirdTask extends Run
     @initiateDropdowns()
     @initiateTextureChoices()
 
+    # cubeObject = CubeObject.generate()
+    # @gl.addObject cubeObject
+
     firstObject = FirstObject.generate()
     @gl.addObject firstObject
 

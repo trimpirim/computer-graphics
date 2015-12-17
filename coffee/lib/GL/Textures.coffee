@@ -34,8 +34,8 @@ class Textures
 		GL.gl.bindTexture(GL.gl.TEXTURE_2D, texture);
 		GL.gl.pixelStorei(GL.gl.UNPACK_FLIP_Y_WEBGL, true);
 		GL.gl.texImage2D(GL.gl.TEXTURE_2D, 0, GL.gl.RGBA, GL.gl.RGBA, GL.gl.UNSIGNED_BYTE, texture.image);
-		GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MAG_FILTER, GL.gl.NEAREST);
-		GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MIN_FILTER, GL.gl.NEAREST);
+		GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MAG_FILTER, GL.gl.LINEAR);
+		GL.gl.texParameteri(GL.gl.TEXTURE_2D, GL.gl.TEXTURE_MIN_FILTER, GL.gl.LINEAR_MIPMAP_NEAREST);
 		@filterAndMips texture.image.width, texture.image.height
 		GL.gl.bindTexture(GL.gl.TEXTURE_2D, null);
 
