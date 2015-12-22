@@ -173,6 +173,54 @@ class FirstObject extends Shape
     [0, -1, 0]#44
   ]
 
+  @connectionsCoords: [
+    [0, 0.2]#0
+    [0, 0]#1
+    [0.2, 0]#2
+    [0.2, 0.2]#3
+    [1, 1]#4
+    [1, 1]#5
+    [0, 0]#6
+    [1, 0]#7
+    [0, 0]#8
+    [1, 0]#9
+    [1, 0]#10
+    [0, 0]#11
+    [0, 0]#12
+    [1, 0.2]#13
+    [1.0, 0.0]#14
+    [0.8, 0.2]#15
+    [0.8, 0.0]#16
+    [0.2, 0]#17
+    [0.2, 0.2]#18
+    [0.4, 0]#19
+    [0.4, 0.2]#20
+    [0.2, 0.2]#21
+    [0.4, 0.2]#22
+    [0.2, 0.4]#23
+    [0.4, 0.4]#24
+    [0.2, 0.2]#25
+    [0.2, 0.4]#26
+    [0, 0.4]#27
+    [0, 0.2]#28
+    [0, 0]#29
+    [0, 0.2]#30
+    [0.2, 0.2]#31
+    [0.2, 0]#32
+    [0.8, 1.0]#33
+    [0.6, 1.0]#34
+    [0.8, 0.8]#35
+    [0.6, 0.8]#36
+    [0.8, 1.0]#37
+    [0.6, 1.0]#38
+    [0.8, 0.8]#39
+    [0.6, 0.8]#40
+    [1.0, 1.0]#41
+    [0.8, 1.0]#42
+    [0.8, 0.8]#43
+    [1.0, 0.8]#44
+  ]
+
   @generate: ->
     vertices = new Vertices()
     vertices.fromArray FirstObject.vertices
@@ -190,6 +238,9 @@ class FirstObject extends Shape
 
     texture = new Texture 'images/third-task/fibonacci.jpg', Texture.fromArray(FirstObject.textureCoords), 'GLSampler' 
     object.textures.add 'fibonacci', texture
+    # texture = new Texture 'images/third-task/bricks.png', Texture.fromArray(FirstObject.connectionsCoords), 'GLSampler2' 
+    # texture.id = 1
+    # object.textures.add 'connection-lines', texture
 
     object.endMatrix = [-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 5, 0, -3, 1]
 

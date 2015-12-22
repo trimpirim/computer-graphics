@@ -24,6 +24,7 @@
       uniform mat4 GLModelViewProjectionMatrixInverse;
       uniform float GLPointSize;
       uniform sampler2D GLSampler;
+      uniform sampler2D GLSampler2;
 
       varying vec4 color;
       varying vec2 textureCoord;
@@ -55,7 +56,9 @@
           specular = pow(specAngle, 50.0);
         }
 
-        vec4 textureColor = texture2D(GLSampler, textureCoord) * color;
+        vec4 firstTexture = texture2D(GLSampler, textureCoord);
+        vec4 secondTexture = texture2D(GLSampler2, textureCoord);
+        vec4 textureColor = firstTexture * secondTexture * color;
 
         gl_FragColor = vec4(textureColor.rgb * ambientColor +
                             lambertian * diffuseColor +

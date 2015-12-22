@@ -26,16 +26,13 @@ ThirdTaskObject = (function(superClass) {
             }
             return _this.modelMatrix = _this.increaseMatrixBy(_this.modelMatrix, 0.01);
           };
-        })(this), 50);
+        })(this), 5);
       case 83:
         return this.texture.fromURL('images/third-task/bricks.png');
     }
   };
 
-  ThirdTaskObject.prototype.ondrag = function(positions) {
-    this.rotateY(positions.deltas.x / 5, false);
-    return this.rotateX(positions.deltas.y / 5, false);
-  };
+  ThirdTaskObject.prototype.ondrag = function(positions) {};
 
   ThirdTaskObject.prototype.initialTranslation = function(which, amount, force) {
     if (force == null) {

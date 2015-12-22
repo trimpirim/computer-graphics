@@ -148,7 +148,7 @@ GL = (function() {
           _this.gl.enableVertexAttribArray(_this.shaders.get('GLTextureCoord'));
           _this.gl.vertexAttribPointer(_this.shaders.get('GLTextureCoord'), texture.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
           _this.textures.bind(texture);
-          return _this.gl.uniform1i(_this.shaders.uniforms.get(texture.sampler).location, 0);
+          return _this.gl.uniform1i(_this.shaders.uniforms.get(texture.sampler).location, texture.id);
         });
       };
     })(this));

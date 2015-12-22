@@ -8,14 +8,14 @@ class ThirdTaskObject extends StateObject
 				interval = setInterval =>
 					clearInterval interval if @transformationDone
 					@modelMatrix = @increaseMatrixBy @modelMatrix, 0.01
-				, 50
+				, 5
 				#@modelMatrix = @endMatrix
 			when 83
 				@texture.fromURL 'images/third-task/bricks.png'
 
 	ondrag: (positions) ->
-    @rotateY positions.deltas.x / 5, false
-    @rotateX positions.deltas.y / 5, false
+    # @rotateY positions.deltas.x / 5, false
+    # @rotateX positions.deltas.y / 5, false
 
 	initialTranslation: (which, amount, force = false) ->
 		@translate which, amount, force

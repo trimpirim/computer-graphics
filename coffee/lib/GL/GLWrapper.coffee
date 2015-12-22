@@ -106,7 +106,7 @@ class GL
         @gl.vertexAttribPointer @shaders.get('GLTextureCoord'), texture.vertices.getColumnsCount(), @gl.FLOAT, false, 0, 0
 
         @textures.bind texture
-        @gl.uniform1i @shaders.uniforms.get(texture.sampler).location, 0
+        @gl.uniform1i @shaders.uniforms.get(texture.sampler).location, texture.id
 
   loadColor: (item) ->
     item.buffers.loopAll (buffer, key) =>
