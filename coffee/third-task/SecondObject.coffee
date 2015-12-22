@@ -152,6 +152,63 @@ class SecondObject extends Shape
     [0.6, 0.4]#53
   ]
 
+  @normals = [
+    [-1, 0, 0]#0
+    [-1, -1, 0]#1
+    [0, 0, 1]#2
+    [0, 0, 1]#3
+    [0, 0, 1]#4
+    [0, 0, 1]#5
+    [0, 1, 0]#6
+    [-1, 0, -1]#7
+    [0, 0, -1]#8
+    [0, 1, -1]#9
+    [1, 1, -1]#10
+    [1, 0, -1]#11
+    [0, -1, -1]#12
+    [1, -1, -1]#13
+    [-1, -1, -1]#14
+    [-2, 0, 0]#15
+    [-2, -1, 0]#16
+    [-2, 0, -1]#17
+    [1, 0, 0]#18
+    [1, 0, 0]#19
+    [1, 0, 0]#20
+    [1, 0, 0]#21
+    [0, -1, 0]#22
+    [0, -1, 0]#23
+    [0, -1, 0]#24
+    [0, -1, 0]#25
+    [1, 0, 0]#26
+    [1, 0, 0]#27
+    [1, 0, 0]#28
+    [1, 0, 0]#29
+    [0, -1, 0]#30
+    [0, -1, 0]#31
+    [0, -1, 0]#32
+    [0, -1, 0]#33
+    [-1, 0, 0]#34
+    [-1, 0, 0]#35
+    [-1, 0, 0]#36
+    [-1, 0, 0]#37
+    [0, 0, -1]#38
+    [0, 0, -1]#39
+    [0, 0, -1]#40
+    [0, 0, -1]#41
+    [0, 0, 1]#42
+    [0, 0, 1]#43
+    [0, 0, 1]#44
+    [0, 0, 1]#45
+    [0, 1, 0]#46
+    [0, 1, 0]#47 
+    [0, 1, 0]#48
+    [0, 1, 0]#49
+    [0, -1, 0]#50
+    [0, -1, 0]#51
+    [0, -1, 0]#52
+    [0, -1, 0]#53
+  ]
+
   @generate: ->
     vertices = new Vertices()
     vertices.fromArray SecondObject.vertices
@@ -161,7 +218,8 @@ class SecondObject extends Shape
     faces.columnsCount = 1
 
     object = new ThirdTaskObject "second-object", vertices, GL.gl['TRIANGLES'], faces
-    object.computeNormals()
+    object.normals = new SimpleObject 'normals', new Vertices().fromArray SecondObject.normals
+    # object.computeNormals()
     object.initialTranslation Axis.TYPES.X, -10, true
     # object.initialTranslation Axis.TYPES.X, 0, true
     # object.initialTranslation Axis.TYPES.Z, 12, true
@@ -169,9 +227,8 @@ class SecondObject extends Shape
     textureCoords = new Vertices()
     textureCoords.fromTextureArray SecondObject.textureCoords
     
-    texture = new Texture 'images/third-task/fibonacci.jpg'
-    texture.vertices = textureCoords
-    object.texture = texture
+    texture = new Texture 'images/third-task/fibonacci.jpg', textureCoords, 'GLSampler'
+    object.textures.add 'fibonacci', texture
     
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 1, 1]
 

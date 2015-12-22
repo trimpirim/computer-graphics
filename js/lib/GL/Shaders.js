@@ -8,6 +8,7 @@ Shaders = (function(superClass) {
   function Shaders() {
     Shaders.__super__.constructor.call(this);
     this.uniforms = new Uniforms();
+    this.program = null;
   }
 
   Shaders.prototype.getShaderTypeAndContent = function(id) {
@@ -64,6 +65,20 @@ Shaders = (function(superClass) {
 
   Shaders.prototype.addUniform = function(name, location, type) {
     return this.uniforms.add(name, location, type);
+  };
+
+  Shaders.prototype.useProgram = function() {
+    var fShader, vShader;
+    fShader = this.getShader(GL.gl, 'shader-fs');
+    vShader = this.getShader(GL.gl, 'shader-vs');
+    this.program = GL.gl.createProgram();
+    GL.gl.attachShader(this.program, vShader);
+    GL.gl.attachShader(this.program, fShader);
+    GL.gl.linkProgram(this.program);
+    if (!GL.gl.getProgramParameter(this.program, GL.gl.LINK_STATUS)) {
+      console.log('CAN NOT INITIALISE SHADERS');
+    }
+    return GL.gl.useProgram(this.program);
   };
 
   return Shaders;

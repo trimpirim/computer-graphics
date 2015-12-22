@@ -31,10 +31,11 @@ Texture = (function() {
     return vertices;
   };
 
-  function Texture(url1, vertices1) {
+  function Texture(url1, vertices1, sampler) {
     this.url = url1;
     this.vertices = vertices1 != null ? vertices1 : new Vertices();
-    this.id = Textures.generateID();
+    this.sampler = sampler != null ? sampler : null;
+    this.id = 0;
     this.texture = GL.gl.createTexture();
     this.buffers = new Buffers();
   }

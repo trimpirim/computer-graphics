@@ -43,7 +43,22 @@ class RunThirdTask extends Run
     @gl.ondrag()
     @gl.onkeydown()
 
-    @gl.startGL()
+    @gl.create()
+    @gl.shaders.useProgram()
+
+    @gl.shaders.add 'GLTextureCoord', @gl.attributeLocation 'GLTextureCoord'
+    @gl.shaders.add 'GLColor', @gl.attributeLocation 'GLColor'
+    @gl.shaders.add 'GLPosition', @gl.attributeLocation 'GLPosition'
+    @gl.shaders.add 'GLNormal', @gl.attributeLocation 'GLNormal'
+
+    @gl.shaders.addUniform 'GLProjectionMatrix', @gl.uniformLocation('GLProjectionMatrix')
+    @gl.shaders.addUniform 'GLModelViewMatrix', @gl.uniformLocation('GLModelViewMatrix')
+    @gl.shaders.addUniform 'GLSampler', @gl.uniformLocation('GLSampler')
+    # @gl.shaders.addUniform 'GLSampler2', @gl.uniformLocation('GLSampler2')
+    @gl.shaders.addUniform 'GLNormalMatrix', @gl.uniformLocation('GLNormalMatrix'), Uniform.TYPES.NORMALS
+
+    @gl.createObjects()
+    @gl.doRest()
 
   initiateDropdowns: ->
     @dropdowns =
@@ -176,7 +191,9 @@ class RunThirdTask extends Run
     $('.texture-choice input[type="radio"]').on 'click', (ev) =>
       url = ev.currentTarget.value
       @gl.loopOnlyShapes (object) =>
-        object.texture.fromURL url
+        texture = object.textures.get 'fibonacci'
+        texture.fromURL url
+        object.textures.update 'fibonacci', texture
 
   initiateSlider: (name, element, valueElement, options = {}) ->
     slide = options.slide.clone() if options.slide?

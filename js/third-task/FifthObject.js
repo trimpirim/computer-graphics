@@ -15,6 +15,8 @@ FifthObject = (function(superClass) {
 
   FifthObject.textureCoords = [[1, 0], [1, 0], [1, 1], [0, 0], [0, 1], [0, 1], [0, 1], [1, 1], [1, 1], [0.2, 0.2], [0.0, 0.2], [0.0, 0.0], [0.2, 0.0], [0.8, 0.2], [0.8, 0.0], [1.0, 0.0], [1.0, 0.2], [0.8, 0.2], [1.0, 0.2], [0.8, 0.4], [1.0, 0.4], [0.8, 0.2], [0.8, 0.4], [1, 0.2], [1, 0.4], [0.2, 0.4], [0.2, 0.2], [0.0, 0.2], [0.0, 0.4], [0, 1], [0, 1], [1, 0], [1, 1], [0.2, 0.2], [0.2, 0.0], [0.4, 0.0], [0.4, 0.2], [0.2, 0.2], [0.2, 0.0], [0.4, 0.2], [0.4, 0.0], [0.6, 0.2], [0.8, 0.2], [0.8, 0.4], [0.6, 0.4], [0.2, 0.2], [0.2, 0.0], [0.0, 0.0], [0.0, 0.2], [0.2, 0.4], [0.2, 0.2], [0.0, 0.2], [0.0, 0.4], [0.2, 0.2], [0.2, 0.0], [0.0, 0.2], [0.0, 0.0], [0.2, 0.2], [0.2, 0.0], [0.0, 0.2], [0.0, 0.0]];
 
+  FifthObject.normals = [[-1, 0, 0], [-1, -1, 0], [0, -1, 0], [0, 0, 0], [1, 0, 0], [0, 1, 0], [-1, 0, -1], [0, 0, -1], [0, 1, -1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 0, 0], [1, -1, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]];
+
   FifthObject.generate = function() {
     var faces, object, texture, textureCoords, vertices;
     vertices = new Vertices();
@@ -22,14 +24,13 @@ FifthObject = (function(superClass) {
     faces = new Vertices();
     faces.fromArray(FifthObject.faces);
     object = new ThirdTaskObject("fifth-object", vertices, GL.gl['TRIANGLES'], faces);
-    object.computeNormals();
+    object.normals = new SimpleObject('normals', new Vertices().fromArray(FifthObject.normals));
     object.initialTranslation(Axis.TYPES.X, 5, true);
     object.endMatrix = [0, 0, 1, 0, 0, -1, 0, 0, 1, 0, 0, 0, 2, 0, 1, 1];
     textureCoords = new Vertices();
     textureCoords.fromTextureArray(FifthObject.textureCoords);
-    texture = new Texture('images/third-task/fibonacci.jpg');
-    texture.vertices = textureCoords;
-    object.texture = texture;
+    texture = new Texture('images/third-task/fibonacci.jpg', textureCoords, 'GLSampler');
+    object.textures.add('fibonacci', texture);
     return object;
   };
 

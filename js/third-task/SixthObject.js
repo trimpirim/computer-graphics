@@ -15,6 +15,8 @@ SixthObject = (function(superClass) {
 
   SixthObject.textureCoords = [[-1, 1], [-1, 0], [0.6, 0.2], [0.6, 0.4], [0.8, 0.2], [0.8, 0.4], [-1, 1], [0, 1], [1, 1], [0, 0], [1, 0], [-1, 0], [0.8, 0.4], [0.6, 0.4], [0.6, 0.6], [0.8, 0.6], [-1, 0], [0, 0], [0, 1], [0.6, 0.2], [0.4, 0.2], [0.6, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.2], [0.2, 0.2], [0.2, 0.4], [0.4, 0.2], [0.4, 0.4], [0.6, 0.4], [0.6, 0.2], [0.4, 0.2], [0.6, 0.2], [0.4, 0.0], [0.6, 0.0], [0.6, 0.2], [0.8, 0.2], [0.8, 0.0], [0.6, 0.0], [0.4, 0.4], [0.6, 0.4], [0.4, 0.6], [0.6, 0.6], [0.6, 0.4], [0.8, 0.4], [0.6, 0.6], [0.8, 0.6], [0.4, 0.6], [0.6, 0.6], [0.4, 0.8], [0.6, 0.8]];
 
+  SixthObject.normals = [[-1, 1, 1], [-1, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [-1, 1, 0], [0, 1, 0], [1, 1, 0], [0, 0, 0], [1, 0, 0], [-1, 0, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [-1, 0, -1], [0, 0, -1], [0, 1, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [0, 0, -1], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]];
+
   SixthObject.generate = function() {
     var faces, object, texture, textureCoords, vertices;
     vertices = new Vertices();
@@ -22,14 +24,13 @@ SixthObject = (function(superClass) {
     faces = new Vertices();
     faces.fromArray(SixthObject.faces);
     object = new ThirdTaskObject("sixth-object", vertices, GL.gl['TRIANGLES'], faces);
-    object.computeNormals();
+    object.normals = new SimpleObject('normals', new Vertices().fromArray(SixthObject.normals));
     object.initialTranslation(Axis.TYPES.X, 10, true);
     object.endMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, -1, 1];
     textureCoords = new Vertices();
     textureCoords.fromTextureArray(SixthObject.textureCoords);
-    texture = new Texture('images/third-task/fibonacci.jpg');
-    texture.vertices = textureCoords;
-    object.texture = texture;
+    texture = new Texture('images/third-task/fibonacci.jpg', textureCoords, 'GLSampler');
+    object.textures.add('fibonacci', texture);
     return object;
   };
 

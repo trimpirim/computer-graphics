@@ -1,19 +1,37 @@
 class Vertices
+  @fromArray: (coordinates, callback) ->
+    coords = []
+    for coordinate in coordinates
+      coordinate = callback(coordinate) if callback?
+      vertex = new Vertex()
+      vertex.fromArray coordinate
+      coords.push vertex
+
+    coords
+
+  @from1DArray: (coordinates) ->
+    vertex = new Vertex
+    for coordinate in coordinates
+      if (vertex.isFull())
+        coords.push vertex
+        vertex = new Vertex()
+
+      vertex.loadCoordinate coordinate
+
+    coords.push vertex
+
   constructor: () ->
     @coords = []
     @columnsCount = 3
+    @
 
   faceColumnsCount: ->
     @columnsCount = 1
 
   fromArray: (coordinates, callback) ->
-    for coordinate in coordinates
-      coordinate = callback(coordinate) if callback?
-      vertex = new Vertex()
-      vertex.fromArray coordinate
-      @coords.push vertex
-
+    @coords = Vertices.fromArray coordinates, callback
     @columnsCount = 3
+    @
 
   fromColorArray: (coordinates) ->
     for coordinate in coordinates
@@ -42,16 +60,7 @@ class Vertices
     result
 
   from1DArray: (coordinates) ->
-    vertex = new Vertex
-    for coordinate in coordinates
-      if (vertex.isFull())
-        @coords.push vertex
-        vertex = new Vertex()
-
-      vertex.loadCoordinate coordinate
-
-    @coords.push vertex
-
+    @coords = Vertices.from1DArray coordinates
 
   getColumnsCount: () ->
     return @columnsCount

@@ -15,6 +15,8 @@ FirstObject = (function(superClass) {
 
   FirstObject.textureCoords = [[0, 0.2], [0, 0], [0.2, 0], [0.2, 0.2], [1, 1], [1, 1], [0, 0], [1, 0], [0, 0], [1, 0], [1, 0], [0, 0], [0, 0], [1, 0.2], [1.0, 0.0], [0.8, 0.2], [0.8, 0.0], [0.2, 0], [0.2, 0.2], [0.4, 0], [0.4, 0.2], [0.2, 0.2], [0.4, 0.2], [0.2, 0.4], [0.4, 0.4], [0.2, 0.2], [0.2, 0.4], [0, 0.4], [0, 0.2], [0, 0], [0, 0.2], [0.2, 0.2], [0.2, 0], [0.8, 1.0], [0.6, 1.0], [0.8, 0.8], [0.6, 0.8], [0.8, 1.0], [0.6, 1.0], [0.8, 0.8], [0.6, 0.8], [1.0, 1.0], [0.8, 1.0], [0.8, 0.8], [1.0, 0.8]];
 
+  FirstObject.normals = [[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 1, 0], [-1, 0, -1], [0, 0, -1], [0, 1, -1], [1, 1, -1], [1, 0, -1], [0, -1, -1], [1, -1, -1], [-1, -1, -1], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0], [0, -1, 0]];
+
   FirstObject.generate = function() {
     var faces, object, texture, vertices;
     vertices = new Vertices();
@@ -23,10 +25,10 @@ FirstObject = (function(superClass) {
     faces.fromArray(FirstObject.faces);
     faces.faceColumnsCount();
     object = new ThirdTaskObject("first-object", vertices, GL.gl['TRIANGLES'], faces);
-    object.computeNormals();
+    object.normals = new SimpleObject('normals', new Vertices().fromArray(FirstObject.normals));
     object.initialTranslation(Axis.TYPES.X, -15, true);
-    texture = new Texture('images/third-task/fibonacci.jpg', Texture.fromArray(FirstObject.textureCoords));
-    object.texture = texture;
+    texture = new Texture('images/third-task/fibonacci.jpg', Texture.fromArray(FirstObject.textureCoords), 'GLSampler');
+    object.textures.add('fibonacci', texture);
     object.endMatrix = [-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 5, 0, -3, 1];
     return object;
   };

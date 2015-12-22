@@ -25,14 +25,13 @@ class SimpleObject
     obj.color = color
     obj
 
-
   constructor: (@name, @vertices = new Vertices(), @mode, @faces, @coordinates, @index) ->
     @buffers = new Buffers()
     @color = null
     @normals = null
     @modelMatrix = mat4.create()
     mat4.identity @modelMatrix
-    @texture = null
+    @textures = new ObjectTextures()
 
   getVertices: () ->
     @vertices
@@ -47,14 +46,14 @@ class SimpleObject
     @buffers.addVertex 'vertices', @vertices.toArray()
     @color.buffers.addVertex 'vertices', @color.vertices.toArray() if @color?
     @normals.buffers.addVertex 'vertices', @normals.vertices.toArray() if @normals?
-    @texture.buffers.addVertex 'vertices', @texture.vertices.toArray() if @texture?
     @buffers.addIndex 'indices', @faces.toArray() if @faces?
+    @textures.addBuffers()
 
   compileBuffers: () ->
     @buffers.compile()
     @color.compileBuffers() if @color?
     @normals.compileBuffers() if @normals?
-    @texture.compileBuffers() if @texture?
+    @textures.compileBuffers()
 
   draw: () ->
     if @buffers.indexExist

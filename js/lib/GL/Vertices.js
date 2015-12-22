@@ -2,18 +2,9 @@ var Vertices,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Vertices = (function() {
-  function Vertices() {
-    this.toArray = bind(this.toArray, this);
-    this.coords = [];
-    this.columnsCount = 3;
-  }
-
-  Vertices.prototype.faceColumnsCount = function() {
-    return this.columnsCount = 1;
-  };
-
-  Vertices.prototype.fromArray = function(coordinates, callback) {
-    var coordinate, i, len, vertex;
+  Vertices.fromArray = function(coordinates, callback) {
+    var coordinate, coords, i, len, vertex;
+    coords = [];
     for (i = 0, len = coordinates.length; i < len; i++) {
       coordinate = coordinates[i];
       if (callback != null) {
@@ -21,9 +12,40 @@ Vertices = (function() {
       }
       vertex = new Vertex();
       vertex.fromArray(coordinate);
-      this.coords.push(vertex);
+      coords.push(vertex);
     }
-    return this.columnsCount = 3;
+    return coords;
+  };
+
+  Vertices.from1DArray = function(coordinates) {
+    var coordinate, i, len, vertex;
+    vertex = new Vertex;
+    for (i = 0, len = coordinates.length; i < len; i++) {
+      coordinate = coordinates[i];
+      if (vertex.isFull()) {
+        coords.push(vertex);
+        vertex = new Vertex();
+      }
+      vertex.loadCoordinate(coordinate);
+    }
+    return coords.push(vertex);
+  };
+
+  function Vertices() {
+    this.toArray = bind(this.toArray, this);
+    this.coords = [];
+    this.columnsCount = 3;
+    this;
+  }
+
+  Vertices.prototype.faceColumnsCount = function() {
+    return this.columnsCount = 1;
+  };
+
+  Vertices.prototype.fromArray = function(coordinates, callback) {
+    this.coords = Vertices.fromArray(coordinates, callback);
+    this.columnsCount = 3;
+    return this;
   };
 
   Vertices.prototype.fromColorArray = function(coordinates) {
@@ -64,17 +86,7 @@ Vertices = (function() {
   };
 
   Vertices.prototype.from1DArray = function(coordinates) {
-    var coordinate, i, len, vertex;
-    vertex = new Vertex;
-    for (i = 0, len = coordinates.length; i < len; i++) {
-      coordinate = coordinates[i];
-      if (vertex.isFull()) {
-        this.coords.push(vertex);
-        vertex = new Vertex();
-      }
-      vertex.loadCoordinate(coordinate);
-    }
-    return this.coords.push(vertex);
+    return this.coords = Vertices.from1DArray(coordinates);
   };
 
   Vertices.prototype.getColumnsCount = function() {

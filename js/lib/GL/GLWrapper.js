@@ -36,7 +36,6 @@ GL = (function() {
     this.shaders = new Shaders();
     this.objects = new Objects();
     this.textures = null;
-    this.shaderProgram = null;
     this.initGL();
   }
 
@@ -80,38 +79,6 @@ GL = (function() {
     return this.textures = textures;
   };
 
-  GL.prototype.initShaders = function() {
-    var fShader, vShader;
-    fShader = this.shaders.getShader(this.gl, 'shader-fs');
-    vShader = this.shaders.getShader(this.gl, 'shader-vs');
-    this.shaderProgram = this.gl.createProgram();
-    this.gl.attachShader(this.shaderProgram, vShader);
-    this.gl.attachShader(this.shaderProgram, fShader);
-    this.gl.linkProgram(this.shaderProgram);
-    if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
-      console.log('CAN NOT INITIALISE SHADERS');
-    }
-    this.gl.useProgram(this.shaderProgram);
-    this.shaders.add('GLTextureCoord', this.gl.getAttribLocation(this.shaderProgram, 'GLTextureCoord'));
-    this.shaders.add('GLColor', this.gl.getAttribLocation(this.shaderProgram, 'GLColor'));
-    this.shaders.add('GLPosition', this.gl.getAttribLocation(this.shaderProgram, 'GLPosition'));
-    this.shaders.add('GLNormal', this.gl.getAttribLocation(this.shaderProgram, 'GLNormal'));
-    this.shaders.addUniform('GLProjectionMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLProjectionMatrix'));
-    this.shaders.addUniform('GLModelViewMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLModelViewMatrix'));
-    this.shaders.addUniform('GLSampler', this.gl.getUniformLocation(this.shaderProgram, 'GLSampler'));
-    return this.shaders.addUniform('GLNormalMatrix', this.gl.getUniformLocation(this.shaderProgram, 'GLNormalMatrix'), Uniform.TYPES.NORMALS);
-
-    /*@shaderProgram.pMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLProjectionMatrix'
-    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLModelViewMatrix'
-    @shaderProgram.mvMatrixUniform = @gl.getUniformLocation @shaderProgram, 'GLSampler'
-     */
-  };
-
-
-  /*setMatrixUniform: (shaderMatrixUniform, matrix) ->
-    @gl.uniformMatrix4fv shaderMatrixUniform, false, matrix
-   */
-
   GL.prototype.addObject = function(obj) {
     return this.objects.add(obj);
   };
@@ -119,22 +86,9 @@ GL = (function() {
   GL.prototype.initObjects = function() {
     return this.objects.loopAll((function(_this) {
       return function(item) {
-
-        /*item.buffers.addVertex 'vertices', item.vertices.toArray()
-        item.color.buffers.addVertex 'vertices', item.color.vertices.toArray() if item.color?
-        item.normals.buffers.addVertex 'vertices', item.normals.vertices.toArray() if item.normals?
-        item.buffers.addIndex 'indices', item.faces.toArray() if item.faces?
-         */
-
-        /*item.compileBuffers()
-        item.color.compileBuffers() if item.color?
-        item.normals.compileBuffers() if item.normals?
-         */
         item.addBuffers();
         item.compileBuffers();
-        if (item.texture != null) {
-          return item.texture.load();
-        }
+        return item.textures.load();
       };
     })(this));
   };
@@ -163,9 +117,7 @@ GL = (function() {
         if (item.color != null) {
           _this.loadColor(item.color);
         }
-        if (item.texture != null) {
-          _this.loadTexture(item.texture);
-        }
+        _this.loadTextures(item.textures);
         if (item.normals != null) {
           _this.loadNormals(item.normals);
         }
@@ -187,15 +139,17 @@ GL = (function() {
     })(this));
   };
 
-  GL.prototype.loadTexture = function(texture) {
-    return texture.buffers.loopAll((function(_this) {
-      return function(buffer, key) {
-        _this.textures.disableColor(_this.shaders.get('GLColor'));
-        _this.gl.bindBuffer(buffer.target, buffer.buffer);
-        _this.gl.enableVertexAttribArray(_this.shaders.get('GLTextureCoord'));
-        _this.gl.vertexAttribPointer(_this.shaders.get('GLTextureCoord'), texture.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
-        _this.textures.bind(texture);
-        return _this.gl.uniform1i(_this.shaders.uniforms.get('GLSampler').location, 0);
+  GL.prototype.loadTextures = function(textures) {
+    return textures.loopAll((function(_this) {
+      return function(texture) {
+        return texture.buffers.loopAll(function(buffer, key) {
+          _this.textures.disableColor(_this.shaders.get('GLColor'));
+          _this.gl.bindBuffer(buffer.target, buffer.buffer);
+          _this.gl.enableVertexAttribArray(_this.shaders.get('GLTextureCoord'));
+          _this.gl.vertexAttribPointer(_this.shaders.get('GLTextureCoord'), texture.vertices.getColumnsCount(), _this.gl.FLOAT, false, 0, 0);
+          _this.textures.bind(texture);
+          return _this.gl.uniform1i(_this.shaders.uniforms.get(texture.sampler).location, 0);
+        });
       };
     })(this));
   };
@@ -223,12 +177,25 @@ GL = (function() {
     })(this));
   };
 
-  GL.prototype.startGL = function() {
+  GL.prototype.attributeLocation = function(attr) {
+    return this.gl.getAttribLocation(this.shaders.program, attr);
+  };
+
+  GL.prototype.uniformLocation = function(uniform) {
+    return this.gl.getUniformLocation(this.shaders.program, uniform);
+  };
+
+  GL.prototype.create = function() {
     if (this.gl == null) {
-      this.initGL();
+      return this.initGL();
     }
-    this.initShaders();
-    this.initObjects();
+  };
+
+  GL.prototype.createObjects = function() {
+    return this.initObjects();
+  };
+
+  GL.prototype.doRest = function() {
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.depthFunc(this.gl.LEQUAL);

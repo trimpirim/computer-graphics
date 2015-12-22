@@ -166,6 +166,70 @@ class FifthObject extends Shape
     [0.0, 0.0]#60
   ]
 
+  @normals: [
+    [-1, 0, 0]#0
+    [-1, -1, 0]#1
+    [0, -1, 0]#2
+    [0, 0, 0]#3
+    [1, 0, 0]#4
+    [0, 1, 0]#5
+    [-1, 0, -1]#6
+    [0, 0, -1]#7
+    [0, 1, -1]#8
+    [0, 0, 1]#9
+    [0, 0, 1]#10
+    [0, 0, 1]#11
+    [0, 0, 1]#12
+    [0, 0, -1]#13
+    [0, 0, -1]#14
+    [0, 0, -1]#15
+    [0, 0, -1]#16
+    [0, 0, -1]#17
+    [0, 0, -1]#18
+    [0, 0, -1]#19
+    [0, 0, -1]#20
+    [-1, 0, 0]#21
+    [-1, 0, 0]#22
+    [-1, 0, 0]#23
+    [-1, 0, 0]#24
+    [1, 0, 0]#25
+    [1, 0, 0]#26
+    [1, 0, 0]#27
+    [1, 0, 0]#28
+    [0, -1, 0]#29
+    [0, 0, 0]#30
+    [1, -1, 0]#31
+    [1, 0, 0]#32
+    [0, 1, 0]#33
+    [0, 1, 0]#34
+    [0, 1, 0]#35
+    [0, 1, 0]#36
+    [1, 0, 0]#37
+    [1, 0, 0]#38
+    [1, 0, 0]#39
+    [1, 0, 0]#40
+    [0, 0, -1]#41 
+    [0, 0, -1]#42
+    [0, 0, -1]#43
+    [0, 0, -1]#44
+    [1, 0, 0]#45
+    [1, 0, 0]#46 
+    [1, 0, 0]#47
+    [1, 0, 0]#48
+    [0, -1, 0]#49
+    [0, -1, 0]#50
+    [0, -1, 0]#51
+    [0, -1, 0]#52
+    [0, -1, 0]#53
+    [0, -1, 0]#54
+    [0, -1, 0]#55
+    [0, -1, 0]#56
+    [0, 1, 0]#57
+    [0, 1, 0]#58
+    [0, 1, 0]#59
+    [0, 1, 0]#60
+  ]
+
   @generate: ->
     vertices = new Vertices()
     vertices.fromArray FifthObject.vertices
@@ -174,7 +238,8 @@ class FifthObject extends Shape
     faces.fromArray FifthObject.faces
 
     object = new ThirdTaskObject "fifth-object", vertices, GL.gl['TRIANGLES'], faces
-    object.computeNormals()
+    object.normals = new SimpleObject 'normals', new Vertices().fromArray FifthObject.normals
+    # object.computeNormals()
     # object.initialTranslation Axis.TYPES.X, 0, true
     # object.initialTranslation Axis.TYPES.Z, 12, true
     object.initialTranslation Axis.TYPES.X, 5, true
@@ -187,8 +252,7 @@ class FifthObject extends Shape
     textureCoords = new Vertices()
     textureCoords.fromTextureArray FifthObject.textureCoords
     
-    texture = new Texture 'images/third-task/fibonacci.jpg'
-    texture.vertices = textureCoords
-    object.texture = texture
+    texture = new Texture 'images/third-task/fibonacci.jpg', textureCoords, 'GLSampler'
+    object.textures.add 'fibonacci', texture
     
     object

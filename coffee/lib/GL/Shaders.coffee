@@ -2,6 +2,7 @@ class Shaders extends ListObject
   constructor: ->
     super()
     @uniforms = new Uniforms()
+    @program = null
 
   getShaderTypeAndContent: (id) ->
     shaderScript = document.getElementById id
@@ -44,3 +45,18 @@ class Shaders extends ListObject
 
   addUniform: (name, location, type) ->
     @uniforms.add name, location, type
+
+  useProgram: ->
+    fShader = @getShader GL.gl, 'shader-fs'
+    vShader = @getShader GL.gl, 'shader-vs'
+
+    @program = GL.gl.createProgram()
+
+    GL.gl.attachShader @program, vShader
+    GL.gl.attachShader @program, fShader
+
+    GL.gl.linkProgram @program
+
+    console.log 'CAN NOT INITIALISE SHADERS' if !GL.gl.getProgramParameter @program, GL.gl.LINK_STATUS
+
+    GL.gl.useProgram @program

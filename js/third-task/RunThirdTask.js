@@ -32,7 +32,18 @@ RunThirdTask = (function(superClass) {
     this.gl.addObject(seventhObject);
     this.gl.ondrag();
     this.gl.onkeydown();
-    return this.gl.startGL();
+    this.gl.create();
+    this.gl.shaders.useProgram();
+    this.gl.shaders.add('GLTextureCoord', this.gl.attributeLocation('GLTextureCoord'));
+    this.gl.shaders.add('GLColor', this.gl.attributeLocation('GLColor'));
+    this.gl.shaders.add('GLPosition', this.gl.attributeLocation('GLPosition'));
+    this.gl.shaders.add('GLNormal', this.gl.attributeLocation('GLNormal'));
+    this.gl.shaders.addUniform('GLProjectionMatrix', this.gl.uniformLocation('GLProjectionMatrix'));
+    this.gl.shaders.addUniform('GLModelViewMatrix', this.gl.uniformLocation('GLModelViewMatrix'));
+    this.gl.shaders.addUniform('GLSampler', this.gl.uniformLocation('GLSampler'));
+    this.gl.shaders.addUniform('GLNormalMatrix', this.gl.uniformLocation('GLNormalMatrix'), Uniform.TYPES.NORMALS);
+    this.gl.createObjects();
+    return this.gl.doRest();
   };
 
   RunThirdTask.prototype.initiateDropdowns = function() {
@@ -218,7 +229,10 @@ RunThirdTask = (function(superClass) {
         var url;
         url = ev.currentTarget.value;
         return _this.gl.loopOnlyShapes(function(object) {
-          return object.texture.fromURL(url);
+          var texture;
+          texture = object.textures.get('fibonacci');
+          texture.fromURL(url);
+          return object.textures.update('fibonacci', texture);
         });
       };
     })(this));

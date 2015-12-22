@@ -150,6 +150,59 @@ class SeventhObject extends Shape
     [1.0, 1.0]#49
   ]
 
+  @normals: [
+    [-1, 1, 1]#0
+    [-1, 0, 1]#1
+    [0, 0, 1]#2
+    [0, 0, 1]#3
+    [0, 0, 1]#4
+    [0, 0, 1]#5
+    [-1, 1, 0]#6
+    [0, 1, 0]#7
+    [0, 0, 0]#8
+    [1, 0, 0]#9
+    [-1, 0, 0]#10
+    [0, -1, 0]#11
+    [0, -1, 0]#12
+    [0, -1, 0]#13
+    [0, -1, 0]#14
+    [0, 0, -1]#15
+    [0, 1, -1]#16
+    [1, 0, -1]#17
+    [0, 0, -1]#18
+    [0, 0, -1]#19
+    [0, 0, -1]#20
+    [0, 0, -1]#21
+    [1, 0, 0]#22
+    [1, 0, 0]#23
+    [1, 0, 0]#24
+    [1, 0, 0]#25
+    [1, 0, 0]#26
+    [1, 0, 0]#27
+    [1, 0, 0]#28
+    [1, 0, 0]#29
+    [1, 0, 0]#30
+    [1, 0, 0]#31
+    [1, 0, 0]#32
+    [1, 0, 0]#33
+    [0, 0, 1]#34
+    [0, 0, 1]#35
+    [0, 0, 1]#36
+    [0, 0, 1]#37
+    [0, 1, 0]#38
+    [0, 1, 0]#39
+    [0, 1, 0]#40
+    [0, 1, 0]#41
+    [0, 1, 0]#42
+    [0, 1, 0]#43
+    [0, 1, 0]#44 
+    [0, 1, 0]#45
+    [0, 1, 0]#46
+    [0, 1, 0]#47
+    [0, 1, 0]#48
+    [0, 1, 0]#49
+  ]
+
   @generate: ->
     vertices = new Vertices()
     vertices.fromArray SeventhObject.vertices
@@ -158,7 +211,8 @@ class SeventhObject extends Shape
     faces.fromArray SeventhObject.faces
 
     object = new ThirdTaskObject "seventh-object", vertices, GL.gl['TRIANGLES'], faces
-    object.computeNormals()
+    object.normals = new SimpleObject 'normals', new Vertices().fromArray SeventhObject.normals
+    # object.computeNormals()
     object.initialTranslation Axis.TYPES.X, 15, true
     # object.initialTranslation Axis.TYPES.X, 0, true
     # object.initialTranslation Axis.TYPES.Z, 12, true
@@ -167,8 +221,7 @@ class SeventhObject extends Shape
     textureCoords = new Vertices()
     textureCoords.fromTextureArray SeventhObject.textureCoords
     
-    texture = new Texture 'images/third-task/fibonacci.jpg'
-    texture.vertices = textureCoords
-    object.texture = texture
+    texture = new Texture 'images/third-task/fibonacci.jpg', textureCoords, 'GLSampler'
+    object.textures.add 'fibonacci', texture
     
     object

@@ -25,8 +25,8 @@ class Texture
 
 		vertices
 
-	constructor: (@url, @vertices = new Vertices()) ->
-		@id = Textures.generateID()
+	constructor: (@url, @vertices = new Vertices(), @sampler = null) ->
+		@id = 0
 		@texture = GL.gl.createTexture()
 		@buffers = new Buffers()
 

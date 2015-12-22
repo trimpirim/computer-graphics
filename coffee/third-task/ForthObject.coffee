@@ -86,9 +86,7 @@ class ForthObject extends Shape
     [39, 41, 42]#bottom
     [43, 44, 46]#bottom
     [44, 45, 46]#bottom
-
   ]
-
 
   @textureCoords: [
     [-1, 0]#0
@@ -140,6 +138,56 @@ class ForthObject extends Shape
     [0.8, 0.8]#46
   ]
 
+  @normals: [
+    [-1, 0, 0]#0
+    [-1, -1, 0]#1
+    [0, -1, 0]#2
+    [0, 0, 0]#3
+    [1, -1, 0]#4
+    [1, 0, 0]#5
+    [0, 1, 0]#6
+    [1, 1, 0]#7
+    [0, 0, -1]#8
+    [0, 0, -1]#9
+    [0, 0, -1]#10
+    [0, 0, -1]#11
+    [0, -1, -1]#12
+    [1, -1, -1]#13
+    [-1, -1, -1]#14
+    [2, 0, 0]#15
+    [2, 0, -1]#16
+    [2, 1, 0]#17
+    [2, 1, -1]#18
+    [0, 1, 0]#19
+    [0, 1, 0]#20
+    [0, 1, 0]#21
+    [0, 1, 0]#22
+    [0, 1, 0]#23
+    [0, 1, 0]#24
+    [0, 1, 0]#25 
+    [0, 1, 0]#26
+    [-1, 0, 0]#27
+    [-1, 0, 0]#28
+    [-1, 0, 0]#29
+    [-1, 0, 0]#30
+    [-1, 0, 0]#31 
+    [-1, 0, 0]#32
+    [-1, 0, 0]#33
+    [-1, 0, 0]#34
+    [0, 0, -1]#35
+    [0, 0, -1]#36
+    [0, 0, -1]#37
+    [0, 0, -1]#38
+    [0, 0, -1]#39
+    [0, 0, -1]#40
+    [0, 0, -1]#41
+    [0, 0, -1]#42
+    [0, 0, -1]#43
+    [0, 0, -1]#44
+    [0, 0, -1]#45
+    [0, 0, -1]#46
+  ]
+
   @generate: ->
     vertices = new Vertices()
     vertices.fromArray ForthObject.vertices
@@ -148,7 +196,8 @@ class ForthObject extends Shape
     faces.fromArray ForthObject.faces
 
     object = new ThirdTaskObject "forth-object", vertices, GL.gl['TRIANGLES'], faces
-    object.computeNormals()
+    object.normals = new SimpleObject 'normals', new Vertices().fromArray ForthObject.normals
+    # object.computeNormals()
     object.initialTranslation Axis.TYPES.X, 0, true
     # object.initialTranslation Axis.TYPES.X, 0, true
     # object.initialTranslation Axis.TYPES.Z, 12, true
@@ -158,8 +207,7 @@ class ForthObject extends Shape
     textureCoords = new Vertices()
     textureCoords.fromTextureArray ForthObject.textureCoords
     
-    texture = new Texture 'images/third-task/fibonacci.jpg'
-    texture.vertices = textureCoords
-    object.texture = texture
+    texture = new Texture 'images/third-task/fibonacci.jpg', textureCoords, 'GLSampler'
+    object.textures.add 'fibonacci', texture
 
     object

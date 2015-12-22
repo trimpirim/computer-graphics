@@ -29,10 +29,37 @@
       varying vec2 textureCoord;
       varying vec3 lighting;
 
-      void main(void) {
+      varying vec3 normal;
+      varying vec3 vertPos;
+
+      const vec3 lightPos = vec3(1.0, 1.0, 1.0);
+      const vec3 ambientColor = vec3(1, 1, 1);
+      const vec3 diffuseColor = vec3(0.2, 0.2, 0.2);
+      const vec3 specColor = vec3(1.0, 1.0, 1.0);
+
+      void main() {
+
+        vec3 normal = normalize(normal);
+        vec3 lightDir = normalize(lightPos - vertPos);
+
+        float lambertian = max(dot(lightDir,normal), 0.0);
+        float specular = 0.0;
+
+        if(lambertian > 0.0) {
+
+          vec3 viewDir = normalize(-vertPos);
+
+          // this is blinn phong
+          vec3 halfDir = normalize(lightDir + viewDir);
+          float specAngle = max(dot(halfDir, normal), 0.0);
+          specular = pow(specAngle, 50.0);
+        }
+
         vec4 textureColor = texture2D(GLSampler, textureCoord) * color;
-        // gl_FragColor = textureColor;
-        gl_FragColor = textureColor;
+
+        gl_FragColor = vec4(textureColor.rgb * ambientColor +
+                            lambertian * diffuseColor +
+                            specular * specColor, textureColor.a);
       }
     </script>
     <script id="shader-vs" type="x-shader/x-vertex">
@@ -53,32 +80,18 @@
       varying vec4 color;
       varying vec2 textureCoord;
 
-      const vec3 lightPos = vec3(1.0, 1.0, 1.0);
-      const vec3 diffuseColor = vec3(0.5, 0.0, 0.0);
-      const vec3 specColor = vec3(1.0, 1.0, 1.0);
+      varying vec3 normal;
+      varying vec3 vertPos;
 
-      void main(void) {
-        gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0); 
-        gl_PointSize = GLPointSize;
-        color = GLColor;
-        textureCoord = GLTextureCoord;
+      void main(){
+          gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0);
+          gl_PointSize = GLPointSize;
+          color = GLColor;
+          textureCoord = GLTextureCoord;
 
-        vec3 normal = vec3(GLNormalMatrix * GLNormal);
-        vec4 vertPos4 = GLModelViewMatrix * vec4(GLPosition, 1.0);
-        vec3 vertPos = vec3(vertPos4) / vertPos4.w;
-        vec3 lightDir = normalize(lightPos - vertPos);
-        vec3 reflectDir = reflect(-lightDir, normal);
-        vec3 viewDir = normalize(-vertPos);
-
-        float lambertian = max(dot(lightDir,normal), 0.0);
-        float specular = 0.0;
-        
-        if(lambertian > 0.0) {
-          float specAngle = max(dot(reflectDir, viewDir), 0.0);
-          specular = pow(specAngle, 4.0);
-        }
-        
-        color = vec4(lambertian * diffuseColor + specular * specColor, 1.0);
+          vec4 vertPos4 = GLModelViewMatrix * vec4(GLPosition, 1.0);
+          vertPos = vec3(vertPos4) / vertPos4.w;
+          normal = vec3(GLNormalMatrix * GLNormal);
       }
     </script>
   </head>
@@ -312,6 +325,7 @@
     <script src="js/lib/GL/Buffer.js"></script>
     <script src="js/lib/GL/Matrices.js"></script>
     <script src="js/lib/GL/Object.js"></script>
+    <script src="js/lib/GL/ObjectTextures.js"></script>
     <script src="js/lib/GL/Shape.js"></script>
     <script src="js/lib/GL/Color.js"></script>
     <script src="js/lib/GL/Objects.js"></script>

@@ -46,7 +46,7 @@ SimpleObject = (function() {
     this.normals = null;
     this.modelMatrix = mat4.create();
     mat4.identity(this.modelMatrix);
-    this.texture = null;
+    this.textures = new ObjectTextures();
   }
 
   SimpleObject.prototype.getVertices = function() {
@@ -69,12 +69,10 @@ SimpleObject = (function() {
     if (this.normals != null) {
       this.normals.buffers.addVertex('vertices', this.normals.vertices.toArray());
     }
-    if (this.texture != null) {
-      this.texture.buffers.addVertex('vertices', this.texture.vertices.toArray());
-    }
     if (this.faces != null) {
-      return this.buffers.addIndex('indices', this.faces.toArray());
+      this.buffers.addIndex('indices', this.faces.toArray());
     }
+    return this.textures.addBuffers();
   };
 
   SimpleObject.prototype.compileBuffers = function() {
@@ -85,9 +83,7 @@ SimpleObject = (function() {
     if (this.normals != null) {
       this.normals.compileBuffers();
     }
-    if (this.texture != null) {
-      return this.texture.compileBuffers();
-    }
+    return this.textures.compileBuffers();
   };
 
   SimpleObject.prototype.draw = function() {
