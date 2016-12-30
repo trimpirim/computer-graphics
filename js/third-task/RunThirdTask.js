@@ -9,6 +9,7 @@ RunThirdTask = (function(superClass) {
     this.gl = new GL();
     this.sliders = {};
     this.dropdowns = {};
+    this.shaderPrograms = {};
   }
 
   RunThirdTask.prototype.run = function() {
@@ -16,6 +17,7 @@ RunThirdTask = (function(superClass) {
     this.initiateSliders();
     this.initiateDropdowns();
     this.initiateTextureChoices();
+    this.initiateLightningChoices();
     firstObject = FirstObject.generate();
     this.gl.addObject(firstObject);
     secondObject = SecondObject.generate();
@@ -33,7 +35,14 @@ RunThirdTask = (function(superClass) {
     this.gl.ondrag();
     this.gl.onkeydown();
     this.gl.create();
-    this.gl.shaders.useProgram();
+    this.initiateShaders();
+    this.gl.shaders.useProgram(this.shaderPrograms.phong);
+    this.addAllUniformsAndAttributes();
+    this.gl.createObjects();
+    return this.gl.doRest();
+  };
+
+  RunThirdTask.prototype.addAllUniformsAndAttributes = function() {
     this.gl.shaders.add('GLTextureCoord', this.gl.attributeLocation('GLTextureCoord'));
     this.gl.shaders.add('GLColor', this.gl.attributeLocation('GLColor'));
     this.gl.shaders.add('GLPosition', this.gl.attributeLocation('GLPosition'));
@@ -41,15 +50,34 @@ RunThirdTask = (function(superClass) {
     this.gl.shaders.addUniform('GLProjectionMatrix', this.gl.uniformLocation('GLProjectionMatrix'));
     this.gl.shaders.addUniform('GLModelViewMatrix', this.gl.uniformLocation('GLModelViewMatrix'));
     this.gl.shaders.addUniform('GLSampler', this.gl.uniformLocation('GLSampler'));
-    this.gl.shaders.addUniform('GLNormalMatrix', this.gl.uniformLocation('GLNormalMatrix'), Uniform.TYPES.NORMALS);
-    this.gl.createObjects();
-    return this.gl.doRest();
+    return this.gl.shaders.addUniform('GLNormalMatrix', this.gl.uniformLocation('GLNormalMatrix'), Uniform.TYPES.NORMALS);
+  };
+
+  RunThirdTask.prototype.initiateShaders = function() {
+    return this.shaderPrograms = {
+      "default": this.gl.shaders.createProgram('shader-fs-default', 'shader-vs-default'),
+      phong: this.gl.shaders.createProgram('shader-fs-phong', 'shader-vs-phong')
+    };
+  };
+
+  RunThirdTask.prototype.initiateLightningChoices = function() {
+    return $('.lightning-choice input[type="radio"]').on('click', (function(_this) {
+      return function(ev) {
+        var programKey;
+        programKey = ev.currentTarget.value;
+        _this.gl.shaders.useProgram(_this.shaderPrograms[programKey]);
+        _this.addAllUniformsAndAttributes();
+        _this.gl.createObjects();
+        return _this.gl.doRest();
+      };
+    })(this));
   };
 
   RunThirdTask.prototype.initiateDropdowns = function() {
     return this.dropdowns = {
       camera: new Dropdown('.drop-down-toggle-camera'),
-      model: new Dropdown('.drop-down-toggle-model')
+      model: new Dropdown('.drop-down-toggle-model'),
+      lightnings: new Dropdown('.drop-down-toggle-lightnings')
     };
   };
 

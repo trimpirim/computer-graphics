@@ -140,11 +140,10 @@ class GL
     @gl.depthFunc @gl.LEQUAL
     @runRenderLoop()
     # @drawScene()
-    @ondraw()
 
   runRenderLoop: () =>
     requestAnimFrame @runRenderLoop
-    #@onredraw()
+    @ondraw()
     @drawScene()
 
   ondrag: () ->
@@ -167,4 +166,5 @@ class GL
 
   onredraw: ->
     @objects.loopOnlyShapes (item) ->
+      # console.log item.onredraw
       item.onredraw() if item.onredraw?

@@ -12,7 +12,7 @@
     <script src="js/lib/webgl-utils.js"></script>
     <script src="js/lib/shapes-utils.js"></script>
     <script src="js/lib/csg-utils.js"></script>
-    <script id="shader-fs" type="x-shader/x-fragment">
+    <script id="shader-fs-default" type="x-shader/x-fragment">
       precision highp float;
 
       uniform mat3 GLNormalMatrix;
@@ -57,15 +57,15 @@
         }
 
         vec4 firstTexture = texture2D(GLSampler, textureCoord);
-        vec4 secondTexture = texture2D(GLSampler2, textureCoord);
-        vec4 textureColor = firstTexture * secondTexture * color;
+        // vec4 secondTexture = texture2D(GLSampler2, textureCoord);
+        vec4 textureColor = firstTexture * color;
 
         gl_FragColor = vec4(textureColor.rgb * ambientColor +
                             lambertian * diffuseColor +
                             specular * specColor, textureColor.a);
       }
     </script>
-    <script id="shader-vs" type="x-shader/x-vertex">
+    <script id="shader-vs-default" type="x-shader/x-vertex">
       uniform mat3 GLNormalMatrix;
       uniform mat4 GLModelViewMatrix;
       uniform mat4 GLProjectionMatrix;
@@ -97,6 +97,79 @@
           normal = vec3(GLNormalMatrix * GLNormal);
       }
     </script>
+    <script id="shader-fs-phong" type="x-shader/x-fragment">
+      precision highp float;
+
+      uniform mat3 GLNormalMatrix;
+      uniform mat4 GLModelViewMatrix;
+      uniform mat4 GLProjectionMatrix;
+      uniform mat4 GLModelViewProjectionMatrix;
+      uniform mat4 GLModelViewMatrixInverse;
+      uniform mat4 GLProjectionMatrixInverse;
+      uniform mat4 GLModelViewProjectionMatrixInverse;
+      uniform float GLPointSize;
+      uniform sampler2D GLSampler;
+      uniform sampler2D GLSampler2;
+
+      varying vec4 color;
+      varying vec2 textureCoord;
+
+      void main() {
+        vec4 firstTexture = texture2D(GLSampler, textureCoord);
+        vec4 secondTexture = texture2D(GLSampler2, textureCoord);
+        vec4 textureColor = firstTexture * color;
+
+        gl_FragColor = vec4(textureColor.rgb, textureColor.a);
+      }
+    </script>
+    <script id="shader-vs-phong" type="x-shader/x-vertex">
+      uniform mat3 GLNormalMatrix;
+      uniform mat4 GLModelViewMatrix;
+      uniform mat4 GLProjectionMatrix;
+      uniform mat4 GLModelViewProjectionMatrix;
+      uniform mat4 GLModelViewMatrixInverse;
+      uniform mat4 GLProjectionMatrixInverse;
+      uniform mat4 GLModelViewProjectionMatrixInverse;
+      uniform float GLPointSize;
+
+      attribute vec3 GLPosition;
+      attribute vec4 GLColor;
+      attribute vec2 GLTextureCoord;
+      attribute vec3 GLNormal;
+
+      varying vec4 color;
+      varying vec2 textureCoord;
+
+      varying vec3 normal;
+      varying vec3 vertPos;
+
+      const vec3 lightPos = vec3(1.0, 1.0, 1.0);
+      const vec3 diffuseColor = vec3(0.5, 0.5, 0.5);
+      const vec3 specColor = vec3(1.0, 1.0, 1.0);
+
+      void main(){
+        gl_Position = GLProjectionMatrix * GLModelViewMatrix * vec4(GLPosition, 1.0);
+        textureCoord = GLTextureCoord;
+
+
+        vec3 normal = GLNormalMatrix * GLNormal;
+        vec4 vertPos4 = GLModelViewMatrix * vec4(GLPosition, 1.0);
+        vec3 vertPos = vec3(vertPos4) / vertPos4.w;
+        vec3 lightDir = normalize(lightPos - vertPos);
+        vec3 reflectDir = reflect(-lightDir, normal);
+        vec3 viewDir = normalize(-vertPos);
+
+        float lambertian = max(dot(lightDir,normal), 0.0);
+        float specular = 0.0;
+
+        if(lambertian > 0.0) {
+          float specAngle = max(dot(reflectDir, viewDir), 0.0);
+          specular = pow(specAngle, 4.0);
+        }
+        color = vec4(lambertian*diffuseColor + specular*specColor, 1.0) * GLColor;
+      }
+    </script> 
+
   </head>
   <body>
     <canvas id="canvas" style="border: none;" tabindex="0"></canvas>
@@ -300,6 +373,35 @@
               <input type="radio" name="texture" value="images/third-task/fibonacci.jpg" id="fibonacci">
               <label for="fibonacci">
                 fibonacci
+              </label>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="list lightnings">
+        <li class="heading drop-down-toggle-lightnings" data-to-hide=".drop-down-lightnings">
+          <a href="javascript:void(0);">
+            LIGHTNINGS
+          </a>
+        </li>
+        <li class="drop-down-lightnings">
+          <ul class="inner lightning-choice">
+            <li class="blinn-phong row">
+              <input type="radio" name="lightning" value="default" id="blinn-phong">
+              <label for="blinn-phong">
+                blinn-phong
+              </label>
+            </li>
+            <li class="phong row">
+              <input type="radio" name="lightning" value="phong" id="phong">
+              <label for="phong">
+                phong
+              </label>
+            </li>
+            <li class="toon row">
+              <input type="radio" name="lightning" value="toon" id="toon">
+              <label for="toon">
+                toon
               </label>
             </li>
           </ul>

@@ -199,12 +199,12 @@ GL = (function() {
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.depthFunc(this.gl.LEQUAL);
-    this.runRenderLoop();
-    return this.ondraw();
+    return this.runRenderLoop();
   };
 
   GL.prototype.runRenderLoop = function() {
     requestAnimFrame(this.runRenderLoop);
+    this.ondraw();
     return this.drawScene();
   };
 

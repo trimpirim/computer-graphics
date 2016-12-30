@@ -46,17 +46,20 @@ class Shaders extends ListObject
   addUniform: (name, location, type) ->
     @uniforms.add name, location, type
 
-  useProgram: ->
-    fShader = @getShader GL.gl, 'shader-fs'
-    vShader = @getShader GL.gl, 'shader-vs'
+  createProgram: (fs = 'shader-fs', vs = 'shader-vs') ->
+    fShader = @getShader GL.gl, fs
+    vShader = @getShader GL.gl, vs
 
-    @program = GL.gl.createProgram()
+    program = GL.gl.createProgram()
 
-    GL.gl.attachShader @program, vShader
-    GL.gl.attachShader @program, fShader
+    GL.gl.attachShader program, vShader
+    GL.gl.attachShader program, fShader
 
-    GL.gl.linkProgram @program
+    GL.gl.linkProgram program
 
-    console.log 'CAN NOT INITIALISE SHADERS' if !GL.gl.getProgramParameter @program, GL.gl.LINK_STATUS
+    console.log 'CAN NOT INITIALISE SHADERS' if !GL.gl.getProgramParameter program, GL.gl.LINK_STATUS
+    return program
 
+  useProgram: (program) ->
+    @program = program
     GL.gl.useProgram @program

@@ -67,17 +67,28 @@ Shaders = (function(superClass) {
     return this.uniforms.add(name, location, type);
   };
 
-  Shaders.prototype.useProgram = function() {
-    var fShader, vShader;
-    fShader = this.getShader(GL.gl, 'shader-fs');
-    vShader = this.getShader(GL.gl, 'shader-vs');
-    this.program = GL.gl.createProgram();
-    GL.gl.attachShader(this.program, vShader);
-    GL.gl.attachShader(this.program, fShader);
-    GL.gl.linkProgram(this.program);
-    if (!GL.gl.getProgramParameter(this.program, GL.gl.LINK_STATUS)) {
+  Shaders.prototype.createProgram = function(fs, vs) {
+    var fShader, program, vShader;
+    if (fs == null) {
+      fs = 'shader-fs';
+    }
+    if (vs == null) {
+      vs = 'shader-vs';
+    }
+    fShader = this.getShader(GL.gl, fs);
+    vShader = this.getShader(GL.gl, vs);
+    program = GL.gl.createProgram();
+    GL.gl.attachShader(program, vShader);
+    GL.gl.attachShader(program, fShader);
+    GL.gl.linkProgram(program);
+    if (!GL.gl.getProgramParameter(program, GL.gl.LINK_STATUS)) {
       console.log('CAN NOT INITIALISE SHADERS');
     }
+    return program;
+  };
+
+  Shaders.prototype.useProgram = function(program) {
+    this.program = program;
     return GL.gl.useProgram(this.program);
   };
 

@@ -40,16 +40,16 @@ Draggable = (function() {
   };
 
   Draggable.prototype.setPositions = function(ev) {
-    this.positions.current.fromArray([ev.clientX, ev.clientY]);
-    this.positions.deltas.fromArray([this.positions.current.x - this.positions.old.x, this.positions.current.y - this.positions.old.y]);
-    return this.positions.old.fromArray([ev.clientX, ev.clientY]);
+    this.positions.current.fromArray([ev.clientY, ev.clientX]);
+    this.positions.deltas.fromArray([this.positions.current.y - this.positions.old.y, this.positions.current.x - this.positions.old.x]);
+    return this.positions.old.fromArray([ev.clientY, ev.clientX]);
   };
 
   Draggable.prototype.down = function(ev) {
     ev = this.loadEvent(ev);
     this.isDragging = true;
     this.obj.onmousemove = this.move;
-    return this.positions.old.fromArray([ev.clientX, ev.clientY]);
+    return this.positions.old.fromArray([ev.clientY, ev.clientX]);
   };
 
   Draggable.prototype.up = function(ev) {

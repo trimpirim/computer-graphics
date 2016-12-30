@@ -4,12 +4,14 @@ class RunThirdTask extends Run
 
     @sliders = {}
     @dropdowns = {}
+    @shaderPrograms = {}
 
   run: () ->
 
     @initiateSliders()
     @initiateDropdowns()
     @initiateTextureChoices()
+    @initiateLightningChoices()
 
     # cubeObject = CubeObject.generate()
     # @gl.addObject cubeObject
@@ -44,8 +46,14 @@ class RunThirdTask extends Run
     @gl.onkeydown()
 
     @gl.create()
-    @gl.shaders.useProgram()
+    @initiateShaders()
+    @gl.shaders.useProgram @shaderPrograms.phong
+    @addAllUniformsAndAttributes()
 
+    @gl.createObjects()
+    @gl.doRest()
+
+  addAllUniformsAndAttributes: ->
     @gl.shaders.add 'GLTextureCoord', @gl.attributeLocation 'GLTextureCoord'
     @gl.shaders.add 'GLColor', @gl.attributeLocation 'GLColor'
     @gl.shaders.add 'GLPosition', @gl.attributeLocation 'GLPosition'
@@ -57,13 +65,24 @@ class RunThirdTask extends Run
     # @gl.shaders.addUniform 'GLSampler2', @gl.uniformLocation('GLSampler2')
     @gl.shaders.addUniform 'GLNormalMatrix', @gl.uniformLocation('GLNormalMatrix'), Uniform.TYPES.NORMALS
 
-    @gl.createObjects()
-    @gl.doRest()
+  initiateShaders: ->
+    @shaderPrograms =
+      default: @gl.shaders.createProgram 'shader-fs-default', 'shader-vs-default'
+      phong: @gl.shaders.createProgram 'shader-fs-phong', 'shader-vs-phong'
+
+  initiateLightningChoices: ->
+    $('.lightning-choice input[type="radio"]').on 'click', (ev) =>
+      programKey = ev.currentTarget.value
+      @gl.shaders.useProgram @shaderPrograms[programKey]
+      @addAllUniformsAndAttributes()
+      @gl.createObjects()
+      @gl.doRest()
 
   initiateDropdowns: ->
     @dropdowns =
       camera: new Dropdown '.drop-down-toggle-camera'
       model: new Dropdown '.drop-down-toggle-model'
+      lightnings: new Dropdown '.drop-down-toggle-lightnings'
 
   initiateSliders: ->
     @initiateSlider 'camera-translate-y', '.camera .translate-y #slider', '.camera .translate-y span.number', {

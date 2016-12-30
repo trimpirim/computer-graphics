@@ -13,20 +13,20 @@ ThirdTaskObject = (function(superClass) {
     this.coordinates = coordinates;
     this.index = index;
     ThirdTaskObject.__super__.constructor.call(this, this.name, this.vertices, this.mode, this.faces, this.coordinates, this.index);
+    this.previousTime = 0;
   }
 
   ThirdTaskObject.prototype.onkeydown = function(ev) {
-    var interval;
     switch (ev.which) {
       case 16:
-        return interval = setInterval((function(_this) {
-          return function() {
-            if (_this.transformationDone) {
-              clearInterval(interval);
-            }
-            return _this.modelMatrix = _this.increaseMatrixBy(_this.modelMatrix, 0.01);
-          };
-        })(this), 5);
+        return this.ondraw = function() {
+          var now;
+          now = (new Date().getTime() / 1000) % 60;
+          if (now !== this.previousTime && !this.transformationDone) {
+            this.previousTime = now;
+            return this.modelMatrix = this.increaseMatrixBy(this.modelMatrix, 0.03);
+          }
+        };
       case 83:
         return this.texture.fromURL('images/third-task/bricks.png');
     }

@@ -119,3 +119,11 @@
 .options ul.list li.heading a:hover {
   color: #808080;
 }
+
+.drop-down-hidden {
+  display: none;
+}
+
+.drop-down-shown {
+  display: block;
+}
